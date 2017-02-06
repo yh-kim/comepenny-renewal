@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e5e5e5"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_base"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridView
+            android:choiceMode="singleChoice"
+            android:scrollbars="none"
+            android:listSelector="#29c5e4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gv_select_booth"
+            android:divider="#00000000"
+            android:layout_centerHorizontal="true"
+            android:numColumns="2"
+            />
+    </LinearLayout>
+</LinearLayout>

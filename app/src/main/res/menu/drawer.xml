@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/nav_item_1"
+            android:icon="@drawable/nav_myinfo"
+            android:title="@string/nav_item_1"/>
+        <item
+            android:id="@+id/nav_item_2"
+            android:icon="@drawable/nav_coupon"
+            android:title="@string/nav_item_2"/>
+    </group>
+
+    <item android:title="sub menu">
+        <menu>
+            <item
+                android:id="@+id/nav_item_3"
+                android:title="설정"/>
+            <item
+                android:id="@+id/nav_item_4"
+                android:title="만든이"/>
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="booth_names">
+        <item>게임</item>
+        <item>공부</item>
+        <item>도전</item>
+        <item>독서</item>
+        <item>애니</item>
+        <item>예술</item>
+        <item>브랜드</item>
+        <item>사랑</item>
+        <item>스포츠</item>
+        <item>시간</item>
+        <item>여행</item>
+        <item>영화</item>
+        <item>오글오글</item>
+        <item>음악</item>
+        <item>이별</item>
+        <item>인생</item>
+        <item>종교</item>
+        <item>창업</item>
+        <item>취업</item>
+        <item>친구</item>
+        <item>희망</item>
+        <item>기타</item>
+    </string-array>
+</resources>

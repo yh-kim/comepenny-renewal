@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/test_layout"
+    android:layout_width="174dp"
+    android:layout_height="174dp"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/img_main_company"
+        android:src="@drawable/icon"
+        android:layout_width="172dp"
+        android:layout_height="172dp"
+        android:scaleType="centerCrop" />
+
+    <RelativeLayout
+        android:layout_width="58dp"
+        android:layout_height="24dp"
+        android:background="@color/colorTransparentGray"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_name"
+            android:text=""
+            android:textSize="15dp"
+            android:textColor="#ffffff"
+            android:gravity="center_horizontal"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/row_booth_box"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/colorTransparentGray"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="6dp"
+            android:gravity="left"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="Idea : "
+                android:textColor="@color/colorDivideGray"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/txt_boothmain_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text=" "
+                android:textColor="@color/colorDivideGray"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
