@@ -50,12 +50,14 @@ public class IdeaAdapter extends RecyclerView.Adapter<IdeaAdapter.IdeaViewHolder
         if(position == 0 && isUseHeader() && holder.getItemViewType() == TYPE_HEADER){
             return;
         }
+        
         position -= isUseHeader()?1:0;
 
         IdeaListItem item = arrLIst.get(position);
 
         // 컨텐츠 라인수 줄이기
         String contents =item.getContent();
+        holder.tvTitle.setText(contents);
         int maxLines = 14;
         holder.tvTitle.setMaxLines(maxLines);
         if (holder.tvTitle.getLineCount() > maxLines){
@@ -70,9 +72,9 @@ public class IdeaAdapter extends RecyclerView.Adapter<IdeaAdapter.IdeaViewHolder
 
         holder.tvTitle.setText(contents);
         holder.tvEmail.setText(hide_email);
-        holder.tvViewCount.setText(item.getViewCount() + "");
-        holder.tvCommentCount.setText(item.getCommentCount() + "");
-        holder.tvLikeCount.setText(item.getLikeCount() + "");
+        holder.tvViewCount.setText(item.getHit() + "");
+        holder.tvCommentCount.setText(item.getCommentNum() + "");
+        holder.tvLikeCount.setText(item.getLikeNum() + "");
         holder.tvBoothName.setText(item.getBoothName());
     }
 
@@ -83,6 +85,7 @@ public class IdeaAdapter extends RecyclerView.Adapter<IdeaAdapter.IdeaViewHolder
         }
 
         return super.getItemViewType(position) + TYPE_ADAPTEE_OFFSET;
+//        return position + TYPE_ADAPTEE_OFFSET;
     }
 
     @Override

@@ -60,7 +60,8 @@ public class CommentAdapter extends RecyclerView.Adapter {
     }
 
     private void onBindHeaderViewHolder(IdeaHeaderViewHolder holder, int position){
-        holder.getIdea();
+//        holder.getIdea();
+        holder.initializationContent();
     }
 
     private void onBindeCommentItemViewHolder(CommentViewHolder holder, int position) {

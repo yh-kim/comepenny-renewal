@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.adapter.MainFragmentAdapter;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
+import com.pickth.comepennyrenewal.util.DataManagement;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        // 나중에 지워야됨
+        DataManagement.setAppPreferences(this, "user_id", "0");
 
         {
             backPressCloseHandler = new BackPressCloseHandler(this);

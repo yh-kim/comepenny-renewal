@@ -8,9 +8,9 @@ public class IdeaListItem {
     private String content;
     private String email;
     private String boothName;
-    private int ViewCount;
-    private int commentCount;
-    private int LikeCount;
+    private int hit;
+    private int commentNum;
+    private int likeNum;
     private int id;
 
     public String getContent() {
@@ -37,28 +37,28 @@ public class IdeaListItem {
         this.boothName = boothName;
     }
 
-    public int getViewCount() {
-        return ViewCount;
+    public int getHit() {
+        return hit;
     }
 
-    public void setViewCount(int viewCount) {
-        ViewCount = viewCount;
+    public void setHit(int hit) {
+        this.hit = hit;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public int getCommentNum() {
+        return commentNum;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setCommentNum(int commentNum) {
+        this.commentNum = commentNum;
     }
 
-    public int getLikeCount() {
-        return LikeCount;
+    public int getLikeNum() {
+        return likeNum;
     }
 
-    public void setLikeCount(int likeCount) {
-        LikeCount = likeCount;
+    public void setLikeNum(int likeNum) {
+        this.likeNum = likeNum;
     }
 
     public int getId() {
@@ -69,14 +69,14 @@ public class IdeaListItem {
         this.id = id;
     }
 
-    public IdeaListItem(String content, String email, String boothName, int viewCount, int commentCount, int likeCount, int id) {
+    public IdeaListItem(String content, String email, String boothName, int hit, int commentNum, int likeNum, int id) {
 
         this.content = content;
         this.email = email;
         this.boothName = boothName;
-        ViewCount = viewCount;
-        this.commentCount = commentCount;
-        LikeCount = likeCount;
+        this.hit = hit;
+        this.commentNum = commentNum;
+        this.likeNum = likeNum;
         this.id = id;
     }
 }

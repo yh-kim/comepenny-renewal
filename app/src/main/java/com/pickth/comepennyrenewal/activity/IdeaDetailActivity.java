@@ -1,5 +1,6 @@
 package com.pickth.comepennyrenewal.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -13,6 +14,7 @@ import android.view.View;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.adapter.CommentAdapter;
 import com.pickth.comepennyrenewal.dto.CommentItem;
+import com.pickth.comepennyrenewal.util.SetFont;
 
 import java.util.ArrayList;
 
@@ -26,12 +28,24 @@ import butterknife.ButterKnife;
 public class IdeaDetailActivity extends AppCompatActivity {
     ArrayList<CommentItem> arrList = new ArrayList<>();
     View headerView;
+    CommentAdapter adapter;
+    private int resultCode = 0;
+    private Intent backIntent = null;
 
     // Binding view
     @BindView(R.id.base_detail_toolbar)
     Toolbar mToolBar;
     @BindView(R.id.rv_idea_detail_comments)
     RecyclerView rvComments;
+
+
+    public void setResultCode(int resultCode) {
+        this.resultCode = resultCode;
+    }
+
+    public void setBackIntent(Intent backIntent) {
+        this.backIntent = backIntent;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,8 +66,8 @@ public class IdeaDetailActivity extends AppCompatActivity {
         }
 
         {
-//            //TextView 폰트 지정
-//            SetFont.setGlobalFont(this, getWindow().getDecorView());
+            //TextView 폰트 지정
+            SetFont.setGlobalFont(this, getWindow().getDecorView());
 
         }
 
@@ -65,7 +79,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
         // comment
         {
             RecyclerView.LayoutManager rvLayoutManager = new LinearLayoutManager(getApplicationContext());
-            CommentAdapter adapter = new CommentAdapter(arrList, getIntent());
+            adapter = new CommentAdapter(arrList, getIntent());
             adapter.setHeaderView(headerView);
             rvComments.setLayoutManager(rvLayoutManager);
             rvComments.setAdapter(adapter);
@@ -110,10 +124,15 @@ public class IdeaDetailActivity extends AppCompatActivity {
     @Override
     public void finish() {
         // resultCode로 수정값이나 삭제한거 넘겨줘야 됨
-        /**
-         *
-         *
-         */
+        switch (resultCode) {
+            case 1:
+                setResult(resultCode, backIntent);
+                break;
+            case 0:
+            case 2:
+                setResult(resultCode);
+                break;
+        }
         super.finish();
         overridePendingTransition(0, 0);
     }
