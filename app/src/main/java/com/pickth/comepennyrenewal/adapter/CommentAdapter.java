@@ -1,5 +1,6 @@
 package com.pickth.comepennyrenewal.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.adapter.viewholder.IdeaHeaderViewHolder;
 import com.pickth.comepennyrenewal.dto.CommentItem;
 
 import java.util.ArrayList;
@@ -16,38 +18,52 @@ import java.util.ArrayList;
  * Created by Kim on 2017-01-30.
  */
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
+public class CommentAdapter extends RecyclerView.Adapter {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ADAPTEE_OFFSET = 1;
     private ArrayList<CommentItem> arrList;
-    private View headerView;
+    private View headerView = null;
+    private Intent intent;
 
-    public CommentAdapter(ArrayList<CommentItem> arrList) {
+    public CommentAdapter(ArrayList<CommentItem> arrList, Intent intent) {
         this.arrList = arrList;
+        this.intent = intent;
     }
 
     @Override
-    public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
         if(viewType == TYPE_HEADER){
             itemView = headerView;
+            return new IdeaHeaderViewHolder(itemView, intent);
         }
         else {
             itemView = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.row_comment, parent, false);
+            return new CommentViewHolder(itemView);
         }
         // Set Font
 //        SetFont.setGlobalFont(parent.getContext(), itemView);
-
-        return new CommentViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(CommentViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(position == 0 && holder.getItemViewType() == TYPE_HEADER && isUseHeader()){
-            return;
+            onBindHeaderViewHolder((IdeaHeaderViewHolder)holder, position);
         }
+        else{
+            onBindeCommentItemViewHolder((CommentViewHolder)holder, position);
+        }
+
+        return;
+    }
+
+    private void onBindHeaderViewHolder(IdeaHeaderViewHolder holder, int position){
+        holder.getIdea();
+    }
+
+    private void onBindeCommentItemViewHolder(CommentViewHolder holder, int position) {
         position -= isUseHeader()?1:0;
         CommentItem item = arrList.get(position);
 
@@ -58,14 +74,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.userId.setText(hide_email);
         holder.content.setText(item.getContent());
         holder.commentTime.setText(item.getCommentTime());
-
-//
-//        if (!item.getUserImg().contains("null")) {
-//            loader.displayImage("https://s3-ap-northeast-1.amazonaws.com/comepenny/" + item.getUser_comment_img(), holder.img);
-//        }
-//        else{
-//            loader.displayImage("https://s3-ap-northeast-1.amazonaws.com/comepenny/myinfo_userimage.png", holder.img);
-//        }
     }
 
     @Override
@@ -93,6 +101,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         }
         return itemCount;
     }
+
+
 
     public int getBasicItemCount() {
         return arrList.size();

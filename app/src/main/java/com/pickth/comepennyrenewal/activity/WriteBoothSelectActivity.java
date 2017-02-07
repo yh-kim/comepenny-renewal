@@ -17,8 +17,7 @@ import android.widget.Toast;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.adapter.BoothAdapter;
 import com.pickth.comepennyrenewal.dto.BoothListItem;
-import com.pickth.comepennyrenewal.service.APIService;
-import com.pickth.comepennyrenewal.util.StaticUrl;
+import com.pickth.comepennyrenewal.net.service.BoothService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +30,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * Created by Kim on 2017-02-01.
@@ -159,19 +157,14 @@ public class WriteBoothSelectActivity extends AppCompatActivity {
     }
 
     private void getBooths(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(StaticUrl.BASE_URL)
-                .build();
-
-        APIService apiService = retrofit.create(APIService.class);
-        Call<ResponseBody> booths = apiService.getBooths();
-        booths.enqueue(new Callback<ResponseBody>() {
+        BoothService boothService = new BoothService();
+        boothService.getBoothList().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     JSONObject jObject = new JSONObject(response.body().string());
 
-                    JSONArray retArr = jObject.getJSONArray("boothList");
+                    JSONArray retArr = jObject.getJSONArray("ret");
                     for (int i=0; i<retArr.length(); i++) {
                         JSONObject obj = retArr.getJSONObject(i);
 

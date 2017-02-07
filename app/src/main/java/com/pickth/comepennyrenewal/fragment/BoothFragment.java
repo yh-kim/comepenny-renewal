@@ -13,9 +13,8 @@ import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.activity.BoothDetailActivity;
 import com.pickth.comepennyrenewal.adapter.BoothAdapter;
 import com.pickth.comepennyrenewal.dto.BoothListItem;
-import com.pickth.comepennyrenewal.service.APIService;
+import com.pickth.comepennyrenewal.net.service.BoothService;
 import com.pickth.comepennyrenewal.util.SetFont;
-import com.pickth.comepennyrenewal.util.StaticUrl;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,7 +28,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * Created by Kim on 2017-01-13.
@@ -39,8 +37,6 @@ public class BoothFragment extends Fragment {
     View rootView;
     BoothAdapter adapter;
     ArrayList<BoothListItem> arrList = new ArrayList<BoothListItem>();
-
-    private static String API_URL = StaticUrl.BASE_URL;
 
     @BindView(R.id.gv_main_booth)
     GridView gvMainBooth;
@@ -52,11 +48,9 @@ public class BoothFragment extends Fragment {
         itBoothDetail.putExtra("boothName", arrList.get(position).getName());
         startActivity(itBoothDetail);
         getActivity().overridePendingTransition(0,0);
-//        Toast.makeText(rootView.getContext(), "a", Toast.LENGTH_SHORT).show();
     }
 
     public static Fragment newInstance() {
-
         Bundle args = new Bundle();
 
         BoothFragment fragment = new BoothFragment();
@@ -87,19 +81,14 @@ public class BoothFragment extends Fragment {
     }
 
     private void getBooths(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .build();
-
-        APIService apiService = retrofit.create(APIService.class);
-        Call<ResponseBody> booths = apiService.getBooths();
-        booths.enqueue(new Callback<ResponseBody>() {
+        BoothService boothService = new BoothService();
+        boothService.getBoothList().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     JSONObject jObject = new JSONObject(response.body().string());
 
-                    JSONArray retArr = jObject.getJSONArray("boothList");
+                    JSONArray retArr = jObject.getJSONArray("ret");
                     for (int i=0; i<retArr.length(); i++) {
                         JSONObject obj = retArr.getJSONObject(i);
 
@@ -121,7 +110,6 @@ public class BoothFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override

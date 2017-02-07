@@ -21,7 +21,6 @@ import com.pickth.comepennyrenewal.adapter.PopularBoothAdapter;
 import com.pickth.comepennyrenewal.dto.BoothListItem;
 import com.pickth.comepennyrenewal.dto.IdeaListItem;
 import com.pickth.comepennyrenewal.util.SetFont;
-import com.pickth.comepennyrenewal.util.StaticUrl;
 
 import java.util.ArrayList;
 
@@ -39,8 +38,6 @@ public class IdeaFragment extends Fragment {
     RecyclerView.LayoutManager rvLayoutManager;
     ArrayList<IdeaListItem> arrList = new ArrayList<IdeaListItem>(  );
     ArrayList<BoothListItem> arrListBooth = new ArrayList<>();
-
-    private static String API_URL = StaticUrl.BASE_URL;
 
     @BindView(R.id.rv_main_idea)
     RecyclerView rvMainIdea;
