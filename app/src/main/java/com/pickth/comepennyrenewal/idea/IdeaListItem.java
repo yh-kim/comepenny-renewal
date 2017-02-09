@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.dto;
+package com.pickth.comepennyrenewal.idea;
 
 /**
  * Created by Kim on 2017-01-13.

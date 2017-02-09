@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.adapter;
+package com.pickth.comepennyrenewal.comment;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.adapter.viewholder.IdeaHeaderViewHolder;
-import com.pickth.comepennyrenewal.dto.CommentItem;
+import com.pickth.comepennyrenewal.idea.IdeaHeaderViewHolder;
+import com.pickth.comepennyrenewal.util.StaticUrl;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class CommentAdapter extends RecyclerView.Adapter {
     private ArrayList<CommentItem> arrList;
     private View headerView = null;
     private Intent intent;
+    View itemView;
 
     public CommentAdapter(ArrayList<CommentItem> arrList, Intent intent) {
         this.arrList = arrList;
@@ -32,7 +34,6 @@ public class CommentAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView;
         if(viewType == TYPE_HEADER){
             itemView = headerView;
             return new IdeaHeaderViewHolder(itemView, intent);
@@ -61,13 +62,17 @@ public class CommentAdapter extends RecyclerView.Adapter {
 
     private void onBindHeaderViewHolder(IdeaHeaderViewHolder holder, int position){
 //        holder.getIdea();
-        holder.initializationContent();
+//        holder.initializationContent();
     }
 
     private void onBindeCommentItemViewHolder(CommentViewHolder holder, int position) {
         position -= isUseHeader()?1:0;
         CommentItem item = arrList.get(position);
 
+        Picasso.with(itemView.getContext())
+                .load(StaticUrl.FILE_URL+item.getUserImg())
+                .fit()
+                .into(holder.img);
         byte[] mailarray = item.getUserEmail().getBytes();
         String email_view = new String(mailarray, 0, 3);
         String hide_email = email_view + "*****";

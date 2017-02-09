@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="알림">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="useNotice"
+            android:summary="알림을 켭니다"
+            android:title="알림 켜기"
+            />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="usePush"
+            android:key="useLikeNotice"
+            android:summary="아침마다 오늘의 Pick 알림이 옵니다"
+            android:title="오늘의 Pick 알림" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="고객지원"  >
+        <Preference
+            android:title="공지사항"
+            android:key="notice" />
+        <Preference
+            android:title="About Us"
+            android:key="aboutUs" />
+        <Preference
+            android:title="License"
+            android:key="license"/>
+        <Preference
+            android:title="회원 탈퇴"
+            android:key="leaveMember"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.adapter;
+package com.pickth.comepennyrenewal.idea;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.dto.IdeaListItem;
 import com.pickth.comepennyrenewal.util.SetFont;
 
 import java.util.ArrayList;

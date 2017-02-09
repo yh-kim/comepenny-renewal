@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.activity;
+package com.pickth.comepennyrenewal.write;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.net.service.IdeaService;
+import com.pickth.comepennyrenewal.util.DataManagement;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Kim on 2017-02-01.
@@ -44,7 +50,7 @@ public class WriteActivity extends AppCompatActivity {
 
         //writebooth에서 intent할때 보낸 값 받기
         Intent intent = getIntent();
-        boothId = intent.getExtras().getInt("boothId");
+        boothId = intent.getExtras().getInt("booth_Id");
         sharedText = intent.getExtras().getString("sharedText");
 
         // actionbar
@@ -61,7 +67,9 @@ public class WriteActivity extends AppCompatActivity {
 
         {
             tvToolbar.setText("글쓰기");
-            etContent.setText(sharedText);
+            if(sharedText != null){
+                etContent.setText(sharedText);
+            }
         }
     }
 
@@ -80,9 +88,7 @@ public class WriteActivity extends AppCompatActivity {
                 }
 
                 // 서버에 저장
-//                putWrite();
-                Toast.makeText(getApplicationContext(), content, Toast.LENGTH_SHORT).show();
-                finish();
+                postIdea(DataManagement.getAppPreferences(this,"user_id"), boothId, content);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -97,7 +103,28 @@ public class WriteActivity extends AppCompatActivity {
 
     @Override
     public void finish() {
+        setResult(3);
         super.finish();
         overridePendingTransition(0,0);
+    }
+
+    public void postIdea(String userId, int boothId, String content) {
+        new IdeaService()
+                .postIdea(userId, boothId, content)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 201) {
+                            finish();
+                        } else {
+                            Toast.makeText(WriteActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 }

@@ -16,17 +16,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".splash.SplashActivity">
         </activity>
-        <activity android:name=".activity.IdeaDetailActivity"/>
-        <activity android:name=".activity.WriteBoothSelectActivity">
+        <activity android:name=".idea.IdeaDetailActivity"/>
+        <activity android:name=".write.WriteBoothSelectActivity">
             <!-- 텍스트 공유 -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -34,10 +34,12 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.WriteActivity"
+        <activity android:name=".write.WriteActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".activity.BoothDetailActivity"/>
+        <activity android:name=".booth.BoothDetailActivity"/>
+        <activity android:name=".setting.SettingActivity"/>
+        <activity android:name=".myinfo.MyInfoActivity"/>
     </application>
 
 </manifest>

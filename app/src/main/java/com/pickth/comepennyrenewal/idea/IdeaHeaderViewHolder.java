@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.adapter.viewholder;
+package com.pickth.comepennyrenewal.idea;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.activity.IdeaDetailActivity;
+import com.pickth.comepennyrenewal.net.service.CommentService;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
 import com.pickth.comepennyrenewal.util.DataManagement;
 import com.pickth.comepennyrenewal.util.PickthDateFormat;
@@ -58,6 +58,8 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     int ideaId = 0;
     String email = "";
     IdeaService ideaService = new IdeaService();
+    CommentService commentService = new CommentService();
+    String userId = "";
 
     // screenshot
     File sdCardPath;
@@ -102,8 +104,12 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
         ideaId = intent.getExtras().getInt("idea_id");
         email = intent.getExtras().getString("email");
 
+        userId = DataManagement.getAppPreferences(itemView.getContext(), "user_id");
+
         //스크린키보드
         keyboard = (InputMethodManager) itemView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        initializationContent();
 
         initializeListener();
     }
@@ -129,25 +135,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                     return;
                 }
                 // 서버에 저장
-                putReple(content);
-
-                //키보드숨기기
-                keyboard.hideSoftInputFromWindow(itemView.getWindowToken(), 0);
-            }
-        });
-
-        btnPick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isPick == 0) {
-                    btnPick.setBackgroundResource(R.drawable.detail_pickbutton_after);
-                    isPick = 1;
-                    // 서버 연결
-                } else {
-                    btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
-                    isPick = 0;
-                    // 서버 연결
-                }
+                postComment(userId, content);
             }
         });
 
@@ -175,7 +163,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                                                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
                                                     // 확인 버튼 클릭시 설정
                                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                                      deleteIdea();
+                                                      deleteIdea(ideaId);
                                                         dialog.cancel();
                                                     }
                                                 })
@@ -206,15 +194,13 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 if (isPick == 0) {
-                    btnPick.setBackgroundResource(R.drawable.detail_pickbutton_after);
-
+                    postLike(ideaId, userId);
                 } else {
-                    btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
+                    deleteLike(ideaId, userId);
                 }
-
-                putLike();
             }
         });
+
     }
 
     /**
@@ -288,7 +274,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     public void initializationContent() {
         //초기화
         tvIdeaOriginal.setText("");
-        getIdea();
+        getIdea(ideaId, userId);
         return;
     }
 
@@ -322,106 +308,191 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     /**
      * 아이디어 조회
      */
-    public void getIdea() {
+    public void getIdea(int ideaId, String userId) {
 
-        ideaService.getIdea(ideaId, DataManagement.getAppPreferences(itemView.getContext(), "user_id")).enqueue(new Callback<ResponseBody>() {
+        ideaService.getIdea(ideaId, userId)
+                .enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    JSONObject jObject = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    try {
+                        JSONObject jObject = new JSONObject(response.body().string());
 
-                    int like = jObject.getInt("isLike");
+                        int like = jObject.getInt("isLike");
 
-                    JSONObject ideaObject = jObject.getJSONObject("idea");
+                        JSONObject ideaObject = jObject.getJSONObject("idea");
 
-                    String content = ideaObject.getString("content");
-                    int ideaId = ideaObject.getInt("id");
-                    int ideaUserId = ideaObject.getInt("userId");
-                    int boothId = ideaObject.getInt("boothId");
-                    int hit = ideaObject.getInt("hit");
-                    int likeNum = ideaObject.getInt("likeNum");
-                    int commentNum = ideaObject.getInt("commentNum");
+                        String content = ideaObject.getString("content");
+                        int ideaId = ideaObject.getInt("id");
+                        int ideaUserId = ideaObject.getInt("userId");
+                        int boothId = ideaObject.getInt("boothId");
+                        int hit = ideaObject.getInt("hit");
+                        int likeNum = ideaObject.getInt("likeNum");
+                        int commentNum = ideaObject.getInt("commentNum");
 
-                    String img_url = boothId + "";
+                        String img_url = boothId + "";
 
-                    //서버에서 date받아와서 formatTimeString이용해서 값 변환
-                    String reg_Time = ideaObject.getString("date");
-                    String time = PickthDateFormat.formatTimeString(reg_Time);
+                        //서버에서 date받아와서 formatTimeString이용해서 값 변환
+                        String reg_Time = ideaObject.getString("date");
+                        String time = PickthDateFormat.formatTimeString(reg_Time);
 
 
-                    String getemail = email;
+                        String getemail = email;
 
-                    byte[] mailarray = getemail.getBytes();
-                    String email_view = new String(mailarray, 0, 3);
-                    String hide_email = email_view + "*****";
+                        byte[] mailarray = getemail.getBytes();
+                        String email_view = new String(mailarray, 0, 3);
+                        String hide_email = email_view + "*****";
 
-                    tvWriter.setText(hide_email);
+                        tvWriter.setText(hide_email);
 //                    tv_logo_name.setText(booth_name);
-                    tvIdeaOriginal.setText(content);
-                    tvView.setText(hit + "");
-                    tvLike.setText(likeNum + "");
-                    tvTime.setText(time);
-                    tvCommentView.setText(commentNum + "");
+                        tvIdeaOriginal.setText(content);
+                        tvView.setText(hit + "");
+                        tvLike.setText(likeNum + "");
+                        tvTime.setText(time);
+                        tvCommentView.setText(commentNum + "");
 
-                    Picasso.with(itemView.getContext())
-                            .load(StaticUrl.FILE_URL+"/booth/"+boothId+".png")
-                            .fit()
-                            .into(ivBoothIcon);
+                        Picasso.with(itemView.getContext())
+                                .load(StaticUrl.FILE_URL + "/booth/" + boothId + ".png")
+                                .fit()
+                                .into(ivBoothIcon);
 
-                    if (like == 1) {
-                        isPick = 1;
-                        btnPick.setBackgroundResource(R.drawable.detail_pickbutton_after);
-                    } else {
-                        isPick = 0;
-                        btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
+                        if (like == 1) {
+                            isPick = 1;
+                            btnPick.setBackgroundResource(R.drawable.detail_pickbutton_after);
+                        } else {
+                            isPick = 0;
+                            btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
+                        }
+
+                        String userId = DataManagement.getAppPreferences(itemView.getContext(), "user_id");
+                        // 글을 쓴 사람이거나 관리자이면
+                        if (userId.equals(ideaUserId) || userId.equals("0")) {
+                            btnDel.setVisibility(View.VISIBLE);
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                    String userId = DataManagement.getAppPreferences(itemView.getContext(), "user_id");
-                    // 글을 쓴 사람이거나 관리자이면
-                    if (userId.equals(ideaUserId) || userId.equals("0")) {
-                        btnDel.setVisibility(View.VISIBLE);
-                    }
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else if(response.code() == 404) {
+                    // 삭제된 아이디어일 때
+                    finishActivity();
+                }else {
+                    Toast.makeText(activity, response.code()+"error", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // 삭제된 아이디어일 때
             }
         });
     }
 
     /**
-     * 아이디어 수정
+     * 댓글 작성
+     * @param content
+     */
+    public void postComment(String userId, String content) {
+        commentService.postComment(ideaId, userId, content)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 201) {
+                            editReple.setText("");
+
+                            //키보드숨기기
+                            keyboard.hideSoftInputFromWindow(itemView.getWindowToken(), 0);
+
+                            // 새로고침
+                            activity.initializeComment();
+                        } else {
+                            Toast.makeText(activity, response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(activity, "실패", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /**
+     * 아이디어 수정 - 미구현
      */
     public void putIdea() {
         Toast.makeText(itemView.getContext(), "아이디어 수정 기능 넣어주세요", Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * 컨텐츠 수정
-     * @param content
+     * 좋아요
      */
-    public void putReple(String content) {
-        Toast.makeText(itemView.getContext(), "입력한값 : " + content, Toast.LENGTH_SHORT).show();
+    public void postLike(int ideaId, String userId) {
+        ideaService.postLike(ideaId, userId)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 201) {
+                            btnPick.setBackgroundResource(R.drawable.detail_pickbutton_after);
+                            isPick = 1;
+                        } else {
+                            Toast.makeText(itemView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 
     /**
-     * 좋아요 수정
+     * 좋아요 취소
+     * @param ideaId
+     * @param userId
      */
-    public void putLike() {
-        Toast.makeText(itemView.getContext(), "좋아요 기능 넣어주세요", Toast.LENGTH_SHORT).show();
+    public void deleteLike(int ideaId, String userId) {
+        ideaService.deleteLike(ideaId, userId)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 204) {
+                            btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
+                            isPick = 0;
+                        } else {
+                            Toast.makeText(itemView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 
     /**
      * 아이디어 삭제
      */
-    public void deleteIdea() {
-        Toast.makeText(itemView.getContext(), "삭제 기능 넣어주세요", Toast.LENGTH_SHORT).show();
+    public void deleteIdea(int ideaId) {
+        ideaService.deleteIdea(ideaId)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 204) {
+                            finishActivity();
+                        }
+                        else {
+                            Toast.makeText(activity, response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 
 }

@@ -1,12 +1,12 @@
-package com.pickth.comepennyrenewal.adapter;
+package com.pickth.comepennyrenewal.main;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.fragment.BoothFragment;
-import com.pickth.comepennyrenewal.fragment.IdeaFragment;
+import com.pickth.comepennyrenewal.booth.BoothFragment;
+import com.pickth.comepennyrenewal.idea.IdeaFragment;
 
 /**
  * 메인 어답터

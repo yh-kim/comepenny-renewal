@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.adapter;
+package com.pickth.comepennyrenewal.booth;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.dto.BoothListItem;
 import com.pickth.comepennyrenewal.util.StaticUrl;
 import com.squareup.picasso.Picasso;
 

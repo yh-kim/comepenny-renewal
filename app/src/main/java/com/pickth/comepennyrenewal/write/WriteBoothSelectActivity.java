@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.activity;
+package com.pickth.comepennyrenewal.write;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.adapter.BoothAdapter;
-import com.pickth.comepennyrenewal.dto.BoothListItem;
+import com.pickth.comepennyrenewal.booth.BoothAdapter;
+import com.pickth.comepennyrenewal.booth.BoothListItem;
 import com.pickth.comepennyrenewal.net.service.BoothService;
 
 import org.json.JSONArray;
@@ -96,7 +96,7 @@ public class WriteBoothSelectActivity extends AppCompatActivity {
         }
 
         {
-            getBooths();
+            getBoothList();
         }
 
         {
@@ -113,7 +113,7 @@ public class WriteBoothSelectActivity extends AppCompatActivity {
             case R.id.action_done:
                 if(selected){
                     Intent company = new Intent(getApplicationContext(), WriteActivity.class);
-                    company.putExtra("boothId", boothId);
+                    company.putExtra("booth_Id", boothId);
 
                     // 공유 받은거라면
                     if(sharedText != ""){
@@ -156,35 +156,39 @@ public class WriteBoothSelectActivity extends AppCompatActivity {
         });
     }
 
-    private void getBooths(){
+    private void getBoothList(){
         BoothService boothService = new BoothService();
         boothService.getBoothList().enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    JSONObject jObject = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    try {
+                        JSONObject jObject = new JSONObject(response.body().string());
 
-                    JSONArray retArr = jObject.getJSONArray("ret");
-                    for (int i=0; i<retArr.length(); i++) {
-                        JSONObject obj = retArr.getJSONObject(i);
+                        JSONArray retArr = jObject.getJSONArray("ret");
+                        for (int i = 0; i < retArr.length(); i++) {
+                            JSONObject obj = retArr.getJSONObject(i);
 
-                        int boothId = obj.getInt("id");
-                        int ideaNum = obj.getInt("ideaNum");
-                        int likeNum =obj.getInt("likeNum");
-                        String imgUrl = boothId+"";
-                        String boothName = obj.getString("name");
+                            int boothId = obj.getInt("id");
+                            int ideaNum = obj.getInt("ideaNum");
+                            int likeNum = obj.getInt("likeNum");
+                            String imgUrl = boothId + "";
+                            String boothName = obj.getString("name");
 
-                        // Item 객체로 만들어야함
-                        BoothListItem item = new BoothListItem(imgUrl,boothName,boothId,ideaNum,likeNum);
-                        // Item 객체를 ArrayList에 넣는다
-                        arrList.add(item);
+                            // Item 객체로 만들어야함
+                            BoothListItem item = new BoothListItem(imgUrl, boothName, boothId, ideaNum, likeNum);
+                            // Item 객체를 ArrayList에 넣는다
+                            arrList.add(item);
 
-                        // Adapter에게 데이터를 넣었으니 갱신하라고 알려줌
-                        adapter.notifyDataSetChanged();
+                            // Adapter에게 데이터를 넣었으니 갱신하라고 알려줌
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    Toast.makeText(WriteBoothSelectActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
                 }
 
             }

@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.adapter;
+package com.pickth.comepennyrenewal.booth;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.activity.WriteBoothSelectActivity;
-import com.pickth.comepennyrenewal.dto.BoothListItem;
 import com.pickth.comepennyrenewal.util.SetFont;
 import com.pickth.comepennyrenewal.util.StaticUrl;
+import com.pickth.comepennyrenewal.write.WriteBoothSelectActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.activity;
+package com.pickth.comepennyrenewal.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.main.MainActivity;
 
 /**
  * Created by Kim on 2017-01-13.

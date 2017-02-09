@@ -1,5 +1,6 @@
-package com.pickth.comepennyrenewal.activity;
+package com.pickth.comepennyrenewal.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,7 +17,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.adapter.MainFragmentAdapter;
+import com.pickth.comepennyrenewal.myinfo.MyInfoActivity;
+import com.pickth.comepennyrenewal.setting.SettingActivity;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
 import com.pickth.comepennyrenewal.util.DataManagement;
 
@@ -64,7 +66,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     item.setChecked(true);
-                    mDrawerLayout.closeDrawers();
+                    switch (item.getItemId()) {
+                        case R.id.nav_item_1:
+                            Intent itMyInfo = new Intent(getApplication(), MyInfoActivity.class);
+                            startActivity(itMyInfo);
+                            overridePendingTransition(0,0);
+                            break;
+                        case R.id.nav_item_3:
+                            Intent itSetting = new Intent(getApplication(), SettingActivity.class);
+                            startActivity(itSetting);
+                            overridePendingTransition(0,0);
+                            break;
+                    }
+//                    mDrawerLayout.closeDrawers();
                     return true;
                 }
             });

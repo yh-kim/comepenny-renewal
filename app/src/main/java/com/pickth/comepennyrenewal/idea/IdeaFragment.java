@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.fragment;
+package com.pickth.comepennyrenewal.idea;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,15 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.activity.BoothDetailActivity;
-import com.pickth.comepennyrenewal.activity.IdeaDetailActivity;
-import com.pickth.comepennyrenewal.activity.WriteBoothSelectActivity;
-import com.pickth.comepennyrenewal.adapter.IdeaAdapter;
-import com.pickth.comepennyrenewal.adapter.PopularBoothAdapter;
-import com.pickth.comepennyrenewal.dto.BoothListItem;
-import com.pickth.comepennyrenewal.dto.IdeaListItem;
+import com.pickth.comepennyrenewal.booth.BoothDetailActivity;
+import com.pickth.comepennyrenewal.write.WriteBoothSelectActivity;
+import com.pickth.comepennyrenewal.booth.PopularBoothAdapter;
+import com.pickth.comepennyrenewal.booth.BoothListItem;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
 import com.pickth.comepennyrenewal.util.SetFont;
 
@@ -28,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
@@ -44,6 +43,9 @@ public class IdeaFragment extends Fragment {
     private int count = 6;
     private int offset = 0;
     int selectedItem = 0;
+
+    @BindArray(R.array.booth_names)
+    String[] boothNames;
 
     IdeaService ideaService = new IdeaService();
 
@@ -69,7 +71,7 @@ public class IdeaFragment extends Fragment {
     }
 
     //Initlist (초기화 메소드)
-    public void initializationList() {
+    public void initializeList() {
         //초기화
         isScroll = true;
         offset = 0;
@@ -103,7 +105,7 @@ public class IdeaFragment extends Fragment {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Intent itBoothDetail = new Intent(rootView.getContext(), BoothDetailActivity.class);
                     itBoothDetail.putExtra("boothId", arrListBooth.get(i).getId());
-                    itBoothDetail.putExtra("boothName", arrListBooth.get(i).getName());
+                    itBoothDetail.putExtra("boothNames", arrListBooth.get(i).getName());
                     startActivity(itBoothDetail);
                     getActivity().overridePendingTransition(0,0);
                 }
@@ -119,7 +121,7 @@ public class IdeaFragment extends Fragment {
         {
             rvLayoutManager = new LinearLayoutManager(rootView.getContext());
             rvMainIdea.setLayoutManager(rvLayoutManager);
-            rvMainIdea.setNestedScrollingEnabled(true);
+            rvMainIdea.setNestedScrollingEnabled(false);
 
             rvMainIdea.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -169,12 +171,12 @@ public class IdeaFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     Intent itWriteBoothSelect = new Intent(rootView.getContext(), WriteBoothSelectActivity.class);
-                    startActivity(itWriteBoothSelect);
+                    startActivityForResult(itWriteBoothSelect, 1);
                 }
             });
         }
 
-        initializationList();
+        initializeList();
 
         return rootView;
     }
@@ -183,7 +185,13 @@ public class IdeaFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (arrList.size() == 0) {
-            initializationList();
+            initializeList();
+            return;
+        }
+
+        // 추가버튼 눌렀을 때
+        if(requestCode == 1) {
+            initializeList();
             return;
         }
 
@@ -219,37 +227,41 @@ public class IdeaFragment extends Fragment {
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        try {
-                            JSONObject jObject = new JSONObject(response.body().string());
+                        if (response.code() == 200) {
+                            try {
+                                JSONObject jObject = new JSONObject(response.body().string());
 
-                            JSONArray retArr = jObject.getJSONArray("ret");
-                            for (int i=0; i<retArr.length(); i++) {
-                                JSONObject obj = retArr.getJSONObject(i);
+                                JSONArray retArr = jObject.getJSONArray("ret");
+                                for (int i = 0; i < retArr.length(); i++) {
+                                    JSONObject obj = retArr.getJSONObject(i);
 
-                                int ideaId = obj.getInt("id");
-                                int ideaUserId = obj.getInt("userId");
-                                int boothId =obj.getInt("boothId");
-                                String content = obj.getString("content");
-                                int hit =obj.getInt("hit");
-                                String date = obj.getString("date");
-                                int likeNum =obj.getInt("likeNum");
-                                int commentNum =obj.getInt("commentNum");
+                                    int ideaId = obj.getInt("id");
+                                    int ideaUserId = obj.getInt("userId");
+                                    int boothId = obj.getInt("boothId");
+                                    String content = obj.getString("content");
+                                    int hit = obj.getInt("hit");
+                                    String date = obj.getString("date");
+                                    int likeNum = obj.getInt("likeNum");
+                                    int commentNum = obj.getInt("commentNum");
 
-                                // Item 객체로 만들어야함
-                                IdeaListItem item = new IdeaListItem(content,ideaUserId+"@test.com", "booth name", hit, commentNum, likeNum, ideaId);
-                                // Item 객체를 ArrayList에 넣는다
-                                arrList.add(item);
+                                    // Item 객체로 만들어야함
+                                    IdeaListItem item = new IdeaListItem(content, ideaUserId + "@test.com", boothNames[boothId - 1], hit, commentNum, likeNum, ideaId);
+                                    // Item 객체를 ArrayList에 넣는다
+                                    arrList.add(item);
 
-                                // Adapter에게 데이터를 넣었으니 갱신하라고 알려줌
-                                adapter.notifyDataSetChanged();
+                                    // Adapter에게 데이터를 넣었으니 갱신하라고 알려줌
+                                    adapter.notifyDataSetChanged();
 //                                adapter.notifyItemChanged(i+offset+1);
-                            }
-                            count = jObject.getInt("cnt");
-                            offset += count;
-                            isScroll = true;
+                                }
+                                count = jObject.getInt("cnt");
+                                offset += count;
+                                isScroll = true;
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(rootView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
                     }
 

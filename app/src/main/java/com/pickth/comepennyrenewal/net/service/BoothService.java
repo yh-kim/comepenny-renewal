@@ -13,13 +13,18 @@ public class BoothService extends BaseService {
         super(BoothAPI.class);
     }
 
+    /**
+     * 부스 리스트를 가져옵니다
+     * @return
+     */
+    public Call<ResponseBody> getBoothList() {
+        return getAPI().getBoothList();
+    }
+
+
     @Override
     public BoothAPI getAPI() {
         return (BoothAPI)super.getAPI();
-    }
-
-    public Call<ResponseBody> getBoothList() {
-        return getAPI().getBoothList();
     }
 
     public interface BoothAPI {

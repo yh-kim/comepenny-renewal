@@ -49,7 +49,8 @@ public class PickthDateFormat {
             // day
             msg = (diffTime) + "달 전";
         } else {
-            msg = str;
+//            msg = str;
+            msg = (diffTime%TIME_MAXIMUM.MONTH) + "년 전";
         }
         return msg;
     }
