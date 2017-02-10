@@ -7,6 +7,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -80,6 +81,16 @@ public class IdeaService extends BaseService {
     }
 
     /**
+     * 아이디어를 수정합니다
+     * @param ideaId 아이디어 아이디
+     * @param content 수정할 컨텐츠
+     * @return
+     */
+    public Call<ResponseBody> putIdea(int ideaId, String content) {
+        return getAPI().putIdea(ideaId, content);
+    }
+
+    /**
      * 아이디어를 삭제합니다
      * @param ideaId 아이디어 아이디
      * @return
@@ -123,17 +134,16 @@ public class IdeaService extends BaseService {
         Call<ResponseBody> postIdea(@Field("user_id") String userId, @Field("booth_id") int boothId, @Field("content") String content);
 
         @FormUrlEncoded
-        @POST("/idea/{id}")
-        Call<ResponseBody> putIdea(@Path("id") int ideaId, @Field("content") String content);
-
-        @FormUrlEncoded
         @POST("/idea/{id}/like")
         Call<ResponseBody> postLike(@Path("id") int ideaId, @Field("user_id") String userId);
+
+        @PUT("/idea/{id}")
+        Call<ResponseBody> putIdea(@Path("id") int ideaId, @Query("content") String content);
 
         @DELETE("/idea/{id}")
         Call<ResponseBody> deleteIdea(@Path("id") int ideaId);
 
         @DELETE("/idea/{id}/like")
-        Call<ResponseBody> deleteLike(@Path("id") int ideaId, @Field("user_id") String userId);
+        Call<ResponseBody> deleteLike(@Path("id") int ideaId, @Query("user_id") String userId);
     }
 }

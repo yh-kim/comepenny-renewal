@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.write;
+package com.pickth.comepennyrenewal.idea;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,12 +25,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by Kim on 2017-02-01.
+ * Created by Kim on 2017-02-10.
  */
 
-public class WriteActivity extends AppCompatActivity {
-    int boothId = 0;
-    String sharedText = "";
+public class ModifyIdeaActivity extends AppCompatActivity {
+    int ideaId = 0;
+    String userId = "";
+    String content = "";
 
     // Binding view
     @BindView(R.id.base_detail_toolbar)
@@ -41,17 +42,17 @@ public class WriteActivity extends AppCompatActivity {
 
     @BindView(R.id.et_content)
     EditText etContent;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
         ButterKnife.bind(this);
 
-        //writebooth에서 intent할때 보낸 값 받기
+        // idea detail에서 intent할때 보낸 값 받기
         Intent intent = getIntent();
-        boothId = intent.getExtras().getInt("booth_Id");
-        sharedText = intent.getExtras().getString("sharedText");
+        ideaId = intent.getExtras().getInt("idea_id");
+        content = intent.getExtras().getString("content");
+        userId = DataManagement.getAppPreferences(this,"user_id");
 
         // actionbar
         {
@@ -66,9 +67,9 @@ public class WriteActivity extends AppCompatActivity {
         }
 
         {
-            tvToolbar.setText("글쓰기");
-            if(sharedText != null){
-                etContent.setText(sharedText);
+            tvToolbar.setText("수정");
+            if(content != null){
+                etContent.setText(content);
             }
         }
     }
@@ -88,7 +89,7 @@ public class WriteActivity extends AppCompatActivity {
                 }
 
                 // 서버에 저장
-                postIdea(DataManagement.getAppPreferences(this,"user_id"), boothId, content);
+                putIdea(ideaId, content);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -107,22 +108,16 @@ public class WriteActivity extends AppCompatActivity {
         overridePendingTransition(0,0);
     }
 
-    public void postIdea(String userId, int boothId, String content) {
+    public void putIdea(int ideaId, String content) {
         new IdeaService()
-                .postIdea(userId, boothId, content)
+                .putIdea(ideaId, content)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.code() == 201) {
-                            Intent backIntent = new Intent();
-
-                            String backContent = etContent.getText().toString();
-                            backIntent.putExtra("backContent", backContent);
-
-                            setResult(1, backIntent);
+                        if(response.code() == 200) {
                             finish();
                         } else {
-                            Toast.makeText(WriteActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
                     }
 

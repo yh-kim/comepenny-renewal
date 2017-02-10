@@ -18,6 +18,7 @@ import com.pickth.comepennyrenewal.comment.CommentItem;
 import com.pickth.comepennyrenewal.net.service.CommentService;
 import com.pickth.comepennyrenewal.util.PickthDateFormat;
 import com.pickth.comepennyrenewal.util.SetFont;
+import com.pickth.comepennyrenewal.util.StaticNumber;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +38,7 @@ import retrofit2.Response;
 
 public class IdeaDetailActivity extends AppCompatActivity {
     private boolean isScroll = false;
-    private int count = 6;
+    private int count = StaticNumber.GET_COMMENT_COUNT;
     private int offset = 0;
     int selectedItem = 0;
 
@@ -57,6 +58,10 @@ public class IdeaDetailActivity extends AppCompatActivity {
 
     public CommentAdapter getAdapter() {
         return adapter;
+    }
+
+    public int getResultCode() {
+        return resultCode;
     }
 
     public void setResultCode(int resultCode) {
@@ -109,9 +114,9 @@ public class IdeaDetailActivity extends AppCompatActivity {
             rvComments.setAdapter(adapter);
 
         }
-        getCommentList();
 
         {
+            initializeComment();
             initializeListener();
         }
     }
@@ -127,10 +132,25 @@ public class IdeaDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1) {
+            // 글 수정하고 왔을 때
+            // 새로 고침
+            View headerChangeView = getLayoutInflater().inflate(R.layout.header_idea_detail, null, false);
+            adapter.setHeaderView(headerChangeView);
+            adapter.notifyItemChanged(0);
+
+//            TextView tvOrigin = (TextView)headerView.findViewById(R.id.tv_idea_original);
+//            tvOrigin.setText("");
+        }
+    }
+
     public void initializeComment() {
         arrList.clear();
         offset = 0;
-        count = 6;
         isScroll = true;
 
         getCommentList();
@@ -150,7 +170,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
                 int totalItemCount = rvLayoutManager.getItemCount();
 
                 if ((firstVisibleItem + visibleItemCount) > totalItemCount - 2) {
-                    if (count != 0 && offset > 3 && offset % 6 == 0) {
+                    if (count != 0 && offset > 3 && offset % StaticNumber.GET_COMMENT_COUNT == 0) {
                         if (isScroll) {
                             //스크롤 멈추게 하는거
                             isScroll = false;

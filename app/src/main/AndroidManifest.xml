@@ -37,6 +37,8 @@
         <activity android:name=".write.WriteActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".idea.ModifyIdeaActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".booth.BoothDetailActivity"/>
         <activity android:name=".setting.SettingActivity"/>
         <activity android:name=".myinfo.MyInfoActivity"/>

@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
+        android:background="@color/colorWhite"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <!-- 이거 넣으면 드래그 했을 때 toolbar 위로 올라감

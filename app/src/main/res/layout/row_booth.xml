@@ -7,7 +7,6 @@
 
     <ImageView
         android:id="@+id/img_main_company"
-        android:src="@drawable/icon"
         android:layout_width="172dp"
         android:layout_height="172dp"
         android:scaleType="centerCrop" />

@@ -4,7 +4,7 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Multipart;
-import retrofit2.http.PUT;
+import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 /**
@@ -18,11 +18,10 @@ public class UserService extends BaseService {
 
     /**
      * 사용자 정보를 수정
-     * @param userId 유저 아이디
      * @return
      */
-    public Call<ResponseBody> putUserInfo(String userId, MultipartBody.Part file) {
-        return getAPI().putUserInfo(userId, file);
+    public Call<ResponseBody> putUserInfo(MultipartBody.Part file) {
+        return getAPI().putUserInfo(file);
     }
 
 
@@ -33,7 +32,7 @@ public class UserService extends BaseService {
 
     public interface UserAPI {
         @Multipart
-        @PUT("/awsS3/user")
-        public Call<ResponseBody> putUserInfo(@Part("user_id") String userId, @Part MultipartBody.Part file);
+        @POST("/awsS3/user")
+        public Call<ResponseBody> putUserInfo(@Part MultipartBody.Part file);
     }
 }

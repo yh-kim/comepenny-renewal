@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -327,6 +326,7 @@ public class MyInfoActivity  extends AppCompatActivity {
 
     public void putUserInfo() {
         String filePath = getApplicationContext().getFilesDir().getPath().toString() + "/photo_img.jpeg";
+//        String filePath = "/photo_img.jpeg";
         File file = new File(filePath);
 
         FileOutputStream fos = null;
@@ -334,7 +334,7 @@ public class MyInfoActivity  extends AppCompatActivity {
             //img 담는거
             if (photo != null) {
 
-                MediaType mediaType = MediaType.parse("image/jpeg");
+//                MediaType mediaType = MediaType.parse("image/jpeg");
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 photo.compress(Bitmap.CompressFormat.JPEG, 100, bos);
 
@@ -343,34 +343,22 @@ public class MyInfoActivity  extends AppCompatActivity {
                 fos = new FileOutputStream(file.getPath());
                 fos.write(data);
                 fos.close();
-
-//                ByteArrayBody bab = new ByteArrayBody(data, "photo_img.ipeg");
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-
         MultipartBody.Part multipartFile = MultipartBody.Part.createFormData(
                 "file",
                 file.getName(),
-                RequestBody.create(MediaType.parse("image/*"),
-                        file)
+                RequestBody.create(MediaType.parse("image/jpeg"), file)
         );
 
         new UserService()
-                .putUserInfo(userId, multipartFile)
+                .putUserInfo(multipartFile)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                        try {
-                            Log.e("ttttt", response.body().string());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
 
                         if (response.code() == 200) {
                             JSONObject jObject = null;

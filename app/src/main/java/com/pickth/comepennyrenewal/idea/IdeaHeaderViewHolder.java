@@ -152,7 +152,13 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                                 switch (index) {
                                     case 0:
                                         // 아이디어 수정 실행
-                                        putIdea();
+                                        setResultCode(1);
+                                        Intent itIdeaDetail = new Intent(activity.getApplicationContext(), ModifyIdeaActivity.class);
+                                        itIdeaDetail.putExtra("idea_id", ideaId);
+                                        String content = tvIdeaOriginal.getText().toString();
+                                        itIdeaDetail.putExtra("content", content);
+                                        activity.startActivityForResult(itIdeaDetail,1);
+                                        activity.overridePendingTransition(0, 0);
                                         dialog1.cancel();
                                         break;
                                     case 1:
@@ -278,21 +284,12 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
         return;
     }
 
+
     /**
      * ResultCode 설정
      * resultCode : 0 - 일반 종료, 1 - 수정한 글, 2 - 삭제한 글
      */
     public void setResultCode(int resultCode) {
-        // 수정한 글일 때
-        if(resultCode == 1) {
-            Intent backIntent = new Intent();
-
-            String backContent = tvIdeaOriginal.getText().toString();
-            backIntent.putExtra("backContent", backContent);
-
-            activity.setBackIntent(backIntent);
-        }
-
         activity.setResultCode(resultCode);
     }
 
@@ -370,6 +367,14 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                             btnDel.setVisibility(View.VISIBLE);
                         }
 
+                        // 수정한 글일 때
+                        if(activity.getResultCode() == 1) {
+                            Intent backIntent = new Intent();
+
+                            Toast.makeText(itemView.getContext(), content+"", Toast.LENGTH_SHORT).show();
+
+                            activity.setBackIntent(backIntent);
+                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -417,12 +422,6 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                 });
     }
 
-    /**
-     * 아이디어 수정 - 미구현
-     */
-    public void putIdea() {
-        Toast.makeText(itemView.getContext(), "아이디어 수정 기능 넣어주세요", Toast.LENGTH_SHORT).show();
-    }
 
     /**
      * 좋아요

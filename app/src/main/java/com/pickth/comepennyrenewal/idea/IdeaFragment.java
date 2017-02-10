@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.booth.BoothDetailActivity;
+import com.pickth.comepennyrenewal.util.StaticNumber;
 import com.pickth.comepennyrenewal.write.WriteBoothSelectActivity;
 import com.pickth.comepennyrenewal.booth.PopularBoothAdapter;
 import com.pickth.comepennyrenewal.booth.BoothListItem;
@@ -40,7 +41,7 @@ import retrofit2.Response;
 
 public class IdeaFragment extends Fragment {
     private boolean isScroll = false;
-    private int count = 6;
+    private int count = StaticNumber.GET_IDEA_COUNT;
     private int offset = 0;
     int selectedItem = 0;
 
@@ -121,7 +122,7 @@ public class IdeaFragment extends Fragment {
         {
             rvLayoutManager = new LinearLayoutManager(rootView.getContext());
             rvMainIdea.setLayoutManager(rvLayoutManager);
-            rvMainIdea.setNestedScrollingEnabled(false);
+            rvMainIdea.setNestedScrollingEnabled(true);
 
             rvMainIdea.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -133,7 +134,7 @@ public class IdeaFragment extends Fragment {
                     if ((firstVisibleItem + visibleItemCount) > totalItemCount - 2) {
                         //서버로부터 받아온 List개수를 count
                         //지금까지 받아온 개수를 offset
-                        if (count != 0 && offset > 3 && offset % 6 == 0) {
+                        if (count != 0 && offset > 3 && offset % StaticNumber.GET_IDEA_COUNT == 0) {
                             if (isScroll) {
                                 //스크롤 멈추게 하는거
                                 isScroll = false;
@@ -204,6 +205,7 @@ public class IdeaFragment extends Fragment {
                 adapter.notifyDataSetChanged();
                 break;
             case 1:
+                // 수정했을 때
                 String backContent = data.getStringExtra("backContent");
 
                 IdeaListItem backItem1 = arrList.get(selectedItem);

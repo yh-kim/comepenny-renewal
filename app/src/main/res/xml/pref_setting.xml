@@ -10,7 +10,7 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:dependency="usePush"
+            android:dependency="useNotice"
             android:key="useLikeNotice"
             android:summary="아침마다 오늘의 Pick 알림이 옵니다"
             android:title="오늘의 Pick 알림" />

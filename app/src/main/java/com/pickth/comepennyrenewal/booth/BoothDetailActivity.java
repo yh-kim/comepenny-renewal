@@ -20,6 +20,7 @@ import com.pickth.comepennyrenewal.idea.IdeaAdapter;
 import com.pickth.comepennyrenewal.idea.IdeaDetailActivity;
 import com.pickth.comepennyrenewal.idea.IdeaListItem;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
+import com.pickth.comepennyrenewal.util.StaticNumber;
 import com.pickth.comepennyrenewal.util.StaticUrl;
 import com.pickth.comepennyrenewal.write.WriteActivity;
 import com.squareup.picasso.Picasso;
@@ -42,7 +43,7 @@ import retrofit2.Response;
 
 public class BoothDetailActivity extends AppCompatActivity {
     private boolean isScroll = false;
-    private int count = 6;
+    private int count = StaticNumber.GET_IDEA_COUNT;
     private int offset = 0;
     int selectedItem = 0;
 
@@ -110,7 +111,7 @@ public class BoothDetailActivity extends AppCompatActivity {
             rvBoothDetailIdea.setLayoutManager(rvLayoutManager);
             rvBoothDetailIdea.setAdapter(adapter);
 
-            rvBoothDetailIdea.setNestedScrollingEnabled(false);
+            rvBoothDetailIdea.setNestedScrollingEnabled(true);
 
             rvBoothDetailIdea.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -122,7 +123,7 @@ public class BoothDetailActivity extends AppCompatActivity {
                     if ((firstVisibleItem + visibleItemCount) > totalItemCount - 2) {
                         //서버로부터 받아온 List개수를 count
                         //지금까지 받아온 개수를 offset
-                        if (count != 0 && offset > 3 && offset % 6 == 0) {
+                        if (count != 0 && offset > 3 && offset % StaticNumber.GET_IDEA_COUNT == 0) {
                             if (isScroll) {
                                 //스크롤 멈추게 하는거
                                 isScroll = false;
