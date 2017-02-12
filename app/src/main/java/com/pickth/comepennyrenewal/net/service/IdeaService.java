@@ -109,6 +109,10 @@ public class IdeaService extends BaseService {
         return getAPI().deleteLike(ideaId, userId);
     }
 
+    public Call<ResponseBody> getTestValue() {
+        return getAPI().getTestValue();
+    }
+
 
     @Override
     public IdeaAPI getAPI() {
@@ -145,5 +149,8 @@ public class IdeaService extends BaseService {
 
         @DELETE("/idea/{id}/like")
         Call<ResponseBody> deleteLike(@Path("id") int ideaId, @Query("user_id") String userId);
+
+        @GET("/book?type=d_isbn&value=118769102X%209791187691020")
+        Call<ResponseBody> getTestValue();
     }
 }

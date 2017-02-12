@@ -1,4 +1,4 @@
-package com.pickth.comepennyrenewal.splash;
+package com.pickth.comepennyrenewal.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,39 +10,18 @@ import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
-import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.login.LoginActivity;
 import com.pickth.comepennyrenewal.main.MainActivity;
 
 /**
- * Created by Kim on 2017-01-13.
+ * Created by Kim on 2017-02-12.
  */
 
-public class SplashActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
-        // 화면이 보이고 2초(2000) 뒤에 로그인 페이지로 넘어감
-        Thread mTimer = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(1000);
-                    getUser();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        mTimer.start();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
+        getUser();
     }
 
     protected void getUser() {
@@ -69,6 +48,8 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(UserProfile result) {
+                String kakaoID = String.valueOf(result.getId()); // userProfile에서 ID값을 가져옴
+                String kakaoNickname = result.getNickname();     // Nickname 값을 가져옴
                 redirectMainActivity();
             }
         });

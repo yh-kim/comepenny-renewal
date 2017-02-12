@@ -1,5 +1,6 @@
 package com.pickth.comepennyrenewal.main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -16,7 +18,12 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.login.LoginActivity;
 import com.pickth.comepennyrenewal.myinfo.MyInfoActivity;
 import com.pickth.comepennyrenewal.setting.SettingActivity;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
@@ -68,14 +75,20 @@ public class MainActivity extends AppCompatActivity {
                     item.setChecked(true);
                     switch (item.getItemId()) {
                         case R.id.nav_item_1:
+                            // 내 정보
                             Intent itMyInfo = new Intent(getApplication(), MyInfoActivity.class);
                             startActivity(itMyInfo);
                             overridePendingTransition(0,0);
                             break;
                         case R.id.nav_item_3:
+                            // 설정
                             Intent itSetting = new Intent(getApplication(), SettingActivity.class);
                             startActivity(itSetting);
                             overridePendingTransition(0,0);
+                            break;
+                        case R.id.nav_item_4:
+                            // 회원탈퇴
+                            unLink();
                             break;
                     }
 //                    mDrawerLayout.closeDrawers();
@@ -130,5 +143,52 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void redirectLoginActivity() {
+        final Intent itLogin = new Intent(this, LoginActivity.class);
+        itLogin.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(itLogin);
+        finish();
+    }
+
+    private void unLink() {
+        final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
+        new AlertDialog.Builder(this)
+                .setMessage(appendMessage)
+                .setPositiveButton(getString(R.string.com_kakao_ok_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserManagement.requestUnlink(new UnLinkResponseCallback() {
+                                    @Override
+                                    public void onFailure(ErrorResult errorResult) {
+                                        Logger.e(errorResult.toString());
+                                    }
+
+                                    @Override
+                                    public void onSessionClosed(ErrorResult errorResult) {
+                                        redirectLoginActivity();
+                                    }
+
+                                    @Override
+                                    public void onNotSignedUp() {
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Long userId) {
+                                        redirectLoginActivity();
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getString(R.string.com_kakao_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
     }
 }
