@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ public class CommentAdapter extends RecyclerView.Adapter {
     private View headerView = null;
     private Intent intent;
     View itemView;
+    AdapterView.OnItemLongClickListener itemLongClickListener;
 
     public CommentAdapter(ArrayList<CommentItem> arrList, Intent intent) {
         this.arrList = arrList;
@@ -108,23 +110,43 @@ public class CommentAdapter extends RecyclerView.Adapter {
         return itemCount;
     }
 
+    public void onItemLongClickListener(AdapterView.OnItemLongClickListener itemLongClickListener) {
+        this.itemLongClickListener = itemLongClickListener;
+    }
+
+    private void onViewHolderItemLongClick(CommentViewHolder commentHolder) {
+        if (itemLongClickListener != null) {
+            itemLongClickListener.onItemLongClick(null, commentHolder.itemView,
+                    commentHolder.getAdapterPosition(), commentHolder.getItemId());
+
+        }
+    }
 
 
     public int getBasicItemCount() {
         return arrList.size();
     }
 
-    public class CommentViewHolder extends RecyclerView.ViewHolder {
+    public class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
         ImageView img;
         TextView userId, content, commentTime;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnLongClickListener(this);
 
             img = (ImageView) itemView.findViewById(R.id.iv_comment_basic);
             userId = (TextView) itemView.findViewById(R.id.tv_comment_userid);
             content = (TextView) itemView.findViewById(R.id.tv_comment);
             commentTime = (TextView) itemView.findViewById(R.id.tv_comment_time);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            if(getItemViewType() != TYPE_HEADER){
+                onViewHolderItemLongClick(this);
+            }
+            return false;
         }
     }
 }

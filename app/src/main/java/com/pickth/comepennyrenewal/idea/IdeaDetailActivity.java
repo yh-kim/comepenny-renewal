@@ -1,15 +1,26 @@
 package com.pickth.comepennyrenewal.idea;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
@@ -19,6 +30,8 @@ import com.pickth.comepennyrenewal.net.service.CommentService;
 import com.pickth.comepennyrenewal.util.PickthDateFormat;
 import com.pickth.comepennyrenewal.util.SetFont;
 import com.pickth.comepennyrenewal.util.StaticNumber;
+import com.pickth.comepennyrenewal.util.StaticUrl;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,6 +62,13 @@ public class IdeaDetailActivity extends AppCompatActivity {
     public CommentAdapter adapter;
     private int resultCode = 0;
     private Intent backIntent = null;
+
+    // dialog view
+    ImageView ivRepleModifyBasic;
+    EditText etRepleModifyText;
+    TextView btnRepleUpdate, btnRepleCancel;
+    AlertDialog mCommentModifyDialog;
+    boolean isAdjustCheck = false;
 
     // Binding view
     @BindView(R.id.base_detail_toolbar)
@@ -180,6 +200,150 @@ public class IdeaDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        adapter.onItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedItem = i-1;
+//                    user_email = DataUtil.getAppPreferences(getApplicationContext(), "user_email");
+
+//                    if (user_email.equals(arr_list.get(commentDelPosition).getEmail())) {
+                if(true){
+                    final CharSequence[] items = {"댓글 수정하기", "댓글 삭제하기"};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(IdeaDetailActivity.this);     // 여기서 this는 Activity의 this
+
+                    // 여기서 부터는 알림창의 속성 설정
+                    builder.setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
+                                public void onClick(DialogInterface dialog, int index) {
+                                    // int형으로 조건 지정
+                                    switch (index) {
+                                        case 0:
+                                            // 수정
+                                            mCommentModifyDialog = createCommentModifyDialog();
+                                            break;
+                                        case 1:
+                                            // 삭제
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(IdeaDetailActivity.this);
+                                            builder.setTitle("삭제 확인")
+                                                    .setMessage("이 글을 삭제하시겠습니까?")        // 메세지 설정
+                                                    .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
+                                                    .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                                                                // 확인 버튼 클릭시 설정
+                                                                public void onClick(DialogInterface dialog_del, int whichButton) {
+                                                                    deleteComment(arrList.get(selectedItem).getCommentId());
+                                                                }
+                                                            }
+                                                    )
+                                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                                // 취소 버튼 클릭시 설정
+                                                                public void onClick(DialogInterface dialog_del, int whichButton) {
+                                                                    dialog_del.cancel();
+                                                                }
+                                                            }
+                                                    );
+                                            AlertDialog dialog_del = builder.create();    // 알림창 객체 생성
+                                            dialog_del.show();    // 알림창 띄우기
+                                            break;
+                                        default:
+                                            dialog.cancel();
+                                            break;
+                                    }
+                                }
+                            }
+                    );
+
+                    AlertDialog dialog = builder.create();    // 알림창 객체 생성
+                    dialog.show();    // 알림창 띄우기
+                }
+                return false;
+            }
+        });
+    }
+
+    //dialog
+    private AlertDialog createCommentModifyDialog() {
+        final View innerView = getLayoutInflater().inflate(R.layout.dialog_comment, null);
+        ivRepleModifyBasic = (ImageView) innerView.findViewById(R.id.iv_reple_modify_basic);
+        etRepleModifyText = (EditText) innerView.findViewById(R.id.et_reple_modify_text);
+        btnRepleUpdate = (TextView) innerView.findViewById(R.id.btn_reple_update);
+        btnRepleCancel = (TextView) innerView.findViewById(R.id.btn_reple_cancel);
+
+
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setView(innerView);
+        //ab.setTitle("댓글 수정하기");
+        ab.setCancelable(true);
+
+        final Dialog mDialog = ab.create();
+
+        Picasso.with(innerView.getContext())
+                .load(StaticUrl.FILE_URL+arrList.get(selectedItem).getUserImg())
+                .fit()
+                .into(ivRepleModifyBasic);
+
+        etRepleModifyText.setText(arrList.get(selectedItem).getContent());
+        etRepleModifyText.setSelection(etRepleModifyText.length()); //커서를 끝에 위치!
+        etRepleModifyText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (arrList.get(selectedItem).getContent().equals(s.toString())) {
+                    btnRepleUpdate.setVisibility(View.INVISIBLE);
+                    isAdjustCheck = false;
+
+                } else {
+                    btnRepleUpdate.setVisibility(View.VISIBLE);
+                    isAdjustCheck = true;
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        btnRepleUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String modifyContent = etRepleModifyText.getText().toString().trim();
+                if (modifyContent.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "내용을 입력하세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!isAdjustCheck) {
+                    return;
+                }
+
+                putComment(arrList.get(selectedItem).getCommentId(), modifyContent);
+                mDialog.cancel();
+
+            }
+        });
+        btnRepleCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.cancel();
+            }
+        });
+
+        //dialog크기조절
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.copyFrom(mDialog.getWindow().getAttributes());
+        // params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        // params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        mDialog.show();
+        //Window window = mDialog.getWindow();
+        //window.setAttributes(params);
+        return ab.create();
+
     }
 
     @Override
@@ -243,6 +407,39 @@ public class IdeaDetailActivity extends AppCompatActivity {
                             Toast.makeText(IdeaDetailActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
 
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void putComment(int commentId, String comment) {
+        Log.e("ttttttttt",commentId+"id, comment :"+comment);
+        new CommentService()
+                .putComment(commentId, comment)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        initializeComment();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void deleteComment(int commentId) {
+        new CommentService()
+                .deleteComment(commentId)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        initializeComment();
                     }
 
                     @Override
