@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView_mainidea_detail"
+    android:background="@color/colorWhite"
     android:layout_marginTop="4dp"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
@@ -234,7 +235,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="10"
+                android:layout_weight="1"
                 android:background="@null"
                 android:hint="댓글달기..."
                 android:maxLines="20"
@@ -243,10 +244,9 @@
 
             <TextView
                 android:id="@+id/btn_reple"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
                 android:text="작성"
                 android:textColor="@color/colorDarkDarkGray"
                 android:textSize="16dp" />

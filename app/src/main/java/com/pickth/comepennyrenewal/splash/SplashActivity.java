@@ -12,6 +12,7 @@ import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.login.LoginActivity;
+import com.pickth.comepennyrenewal.login.SignupEmailActivity;
 import com.pickth.comepennyrenewal.main.MainActivity;
 
 /**
@@ -69,7 +70,12 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(UserProfile result) {
-                redirectMainActivity();
+                if(result.getProperties().get("email") != null){
+                    redirectMainActivity();
+                } else {
+                    // 이메일 저장이 안돼있을 때
+                    redirectSignupEmailActivity();
+                }
             }
         });
     }
@@ -85,6 +91,13 @@ public class SplashActivity extends AppCompatActivity {
         final Intent itMain = new Intent(this, MainActivity.class);
         itMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(itMain);
+        finish();
+    }
+
+    protected void redirectSignupEmailActivity() {
+        final Intent itSignupEmail = new Intent(this, SignupEmailActivity.class);
+        itSignupEmail.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(itSignupEmail);
         finish();
     }
 }

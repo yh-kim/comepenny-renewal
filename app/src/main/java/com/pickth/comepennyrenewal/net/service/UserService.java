@@ -17,6 +17,14 @@ public class UserService extends BaseService {
     }
 
     /**
+     * 회원가입
+     * @return
+     */
+    public Call<ResponseBody> postUser() {
+        return getAPI().postUser();
+    }
+
+    /**
      * 사용자 정보를 수정
      * @return
      */
@@ -31,6 +39,9 @@ public class UserService extends BaseService {
     }
 
     public interface UserAPI {
+        @POST("/user")
+        public Call<ResponseBody> postUser();
+
         @Multipart
         @POST("/awsS3/user")
         public Call<ResponseBody> putUserInfo(@Part MultipartBody.Part file);

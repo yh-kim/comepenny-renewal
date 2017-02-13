@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.booth.BoothDetailActivity;
+import com.pickth.comepennyrenewal.net.service.BoothService;
 import com.pickth.comepennyrenewal.util.StaticNumber;
 import com.pickth.comepennyrenewal.write.WriteBoothSelectActivity;
 import com.pickth.comepennyrenewal.booth.PopularBoothAdapter;
@@ -44,6 +45,7 @@ public class IdeaFragment extends Fragment {
     private int count = StaticNumber.GET_IDEA_COUNT;
     private int offset = 0;
     int selectedItem = 0;
+    PopularBoothAdapter adapterPopularBoot;
 
     @BindArray(R.array.booth_names)
     String[] boothNames;
@@ -95,7 +97,7 @@ public class IdeaFragment extends Fragment {
         {
             headerView = getActivity().getLayoutInflater().inflate(R.layout.header_popular_booth, null, false);
 
-            PopularBoothAdapter adapterPopularBoot = new PopularBoothAdapter(getContext(),arrListBooth);
+            adapterPopularBoot = new PopularBoothAdapter(getContext(),arrListBooth);
             LinearLayoutManager rvPopularBoothLayoutManager = new LinearLayoutManager(rootView.getContext(), LinearLayoutManager.HORIZONTAL, false);
 
             RecyclerView rvPopularBooth = (RecyclerView)headerView.findViewById(R.id.rv_popular_booth);
@@ -112,10 +114,7 @@ public class IdeaFragment extends Fragment {
                 }
             });
 
-            for(int i=0; i<8; i++) {
-                arrListBooth.add(new BoothListItem((i+1)+"", (i+1) + "", i+1, i + 100, i + 1000));
-            }
-            adapterPopularBoot.notifyDataSetChanged();
+            getPopularBoothList();
         }
 
         // RecyclerView
@@ -264,6 +263,48 @@ public class IdeaFragment extends Fragment {
                             }
                         } else {
                             Toast.makeText(rootView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void getPopularBoothList() {
+        new BoothService()
+                .getBoothList()
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.code() == 200) {
+                            try {
+                                JSONObject jObject = new JSONObject(response.body().string());
+
+                                JSONArray retArr = jObject.getJSONArray("ret");
+                                for (int i = 0; i < 5; i++) {
+                                    JSONObject obj = retArr.getJSONObject(i);
+
+                                    int boothId = obj.getInt("id");
+                                    int ideaNum = obj.getInt("ideaNum");
+                                    int likeNum = obj.getInt("likeNum");
+                                    String imgUrl = boothId + "";
+                                    String boothName = obj.getString("name");
+
+                                    // Item 객체로 만들어야함
+                                    BoothListItem item = new BoothListItem(imgUrl, boothName, boothId, ideaNum, likeNum);
+                                    // Item 객체를 ArrayList에 넣는다
+                                    arrListBooth.add(item);
+
+                                    // Adapter에게 데이터를 넣었으니 갱신하라고 알려줌
+                                    adapterPopularBoot.notifyDataSetChanged();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
 

@@ -49,7 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onSessionOpened() {
             // 사용자 정보를 가져옴, 미가입시 자동 가입
-            redirectMainActivity();
+
+            // 이메일 입력하는 엑티비티로 이동
+            redirectSignupActivity();
         }
 
         @Override
@@ -67,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
      * 세션 연결 시 액티비티 이동
      */
     protected void redirectSignupActivity() {
-        final Intent itSignup = new Intent(this, SignupActivity.class);
+        final Intent itSignup = new Intent(this, SignupEmailActivity.class);
         itSignup.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(itSignup);
         finish();

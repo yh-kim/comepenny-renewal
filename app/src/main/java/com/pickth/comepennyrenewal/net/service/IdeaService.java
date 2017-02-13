@@ -50,6 +50,16 @@ public class IdeaService extends BaseService {
     }
 
     /**
+     * 유저가 작성한 아이디어 리스트를 최신순으로 불러옵니다
+     * @param userId
+     * @param offset
+     * @return
+     */
+    public Call<ResponseBody> getIdeaListByUser(String userId, int offset) {
+        return getAPI().getIdeaListByUser(userId, offset);
+    }
+
+    /**
      * 유저가 좋아요한 아이디어 리스트를 최신순으로 불러옵니다
      * @param userId 유저 아이디
      * @param offset 시작점
@@ -129,6 +139,9 @@ public class IdeaService extends BaseService {
 
         @GET("/idea/{booth_id}/booth")
         Call<ResponseBody> getIdeaListByBooth(@Path("booth_id") int boothId, @Query("offset")int offset);
+
+        @GET("/idea/user/{user_id}")
+        Call<ResponseBody> getIdeaListByUser(@Path("user_id") String userId, @Query("offset") int offset);
 
         @GET("/idea/like/{user_id}")
         Call<ResponseBody> getIdeaListByLike(@Path("user_id") String userId, @Query("offset")int offset);

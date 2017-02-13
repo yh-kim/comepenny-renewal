@@ -20,7 +20,9 @@ import android.widget.Toast;
 
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.login.LoginActivity;
@@ -28,6 +30,8 @@ import com.pickth.comepennyrenewal.myinfo.MyInfoActivity;
 import com.pickth.comepennyrenewal.setting.SettingActivity;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
 import com.pickth.comepennyrenewal.util.DataManagement;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +52,24 @@ public class MainActivity extends AppCompatActivity {
 
         // 나중에 지워야됨
         DataManagement.setAppPreferences(this, "user_id", "0");
+
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+
+            }
+
+            @Override
+            public void onNotSignedUp() {
+
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Map userInfo = result.getProperties();
+                String email = userInfo.get("email").toString();
+            }
+        });
 
         {
             backPressCloseHandler = new BackPressCloseHandler(this);
