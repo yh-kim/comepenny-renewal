@@ -67,8 +67,8 @@ public class IdeaAdapter extends RecyclerView.Adapter<IdeaAdapter.IdeaViewHolder
             Log.e("dddddddddddddddddd",lastCharShown+"");
         }
         */
-        if (contents.length() > 120){
-            contents = contents.substring(0, 120) + "\n …";
+        if (contents.length() > 140){
+            contents = contents.substring(0, 140) + " …";
         }
 
         // email 가리기

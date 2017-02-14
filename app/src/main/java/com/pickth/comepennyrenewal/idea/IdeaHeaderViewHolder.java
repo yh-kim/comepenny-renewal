@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.net.service.BookService;
 import com.pickth.comepennyrenewal.net.service.CommentService;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
 import com.pickth.comepennyrenewal.util.DataManagement;
@@ -27,6 +28,7 @@ import com.pickth.comepennyrenewal.util.PickthDateFormat;
 import com.pickth.comepennyrenewal.util.StaticUrl;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -95,6 +97,18 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     TextView tvWriter;
     @BindView(R.id.iv_boothicon)
     ImageView ivBoothIcon;
+
+    // book info
+    @BindView(R.id.ll_book_info)
+    LinearLayout llBookInfo;
+    @BindView(R.id.iv_book_info_img)
+    ImageView ivBookInfoImg;
+    @BindView(R.id.tv_book_info_title)
+    TextView tvBookInfoTitle;
+    @BindView(R.id.tv_book_info_author)
+    TextView tvBookInfoAuthor;
+    @BindView(R.id.tv_book_info_publisher)
+    TextView tvBookInfoPublisher;
 
     public IdeaHeaderViewHolder(View itemView, Intent intent) {
         super(itemView);
@@ -376,6 +390,11 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                             activity.setBackIntent(backIntent);
                         }
 
+                        // 등록한 책이 있다면
+                        if(true) {
+                            getBookInfo("d_isbn", "1186560126 9791186560129");
+                        }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -391,6 +410,52 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
             }
         });
+    }
+
+    /**
+     * 책 정보 조회
+     */
+    public void getBookInfo(String type, String value) {
+        new BookService()
+                .getBook(type, value)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.code() == 200) {
+                            try {
+                                JSONObject jObject = new JSONObject(response.body().string());
+
+                                JSONArray retArr = jObject.getJSONArray("items");
+                                if(retArr.length() > 0) {
+                                    JSONObject obj = retArr.getJSONObject(0);
+
+                                    String title = obj.getString("title");
+                                    String author = obj.getString("author");
+                                    String publisher = obj.getString("publisher");
+                                    String imgUrl = obj.getString("image");
+
+                                    llBookInfo.setVisibility(View.VISIBLE);
+                                    tvBookInfoTitle.setText(title);
+                                    tvBookInfoAuthor.setText(author);
+                                    tvBookInfoPublisher.setText(publisher);
+
+                                    Picasso.with(itemView.getContext())
+                                            .load(imgUrl)
+                                            .fit()
+                                            .into(ivBookInfoImg);
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 
     /**

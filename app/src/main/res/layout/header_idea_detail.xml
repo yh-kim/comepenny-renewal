@@ -3,7 +3,7 @@
     android:id="@+id/scrollView_mainidea_detail"
     android:background="@color/colorWhite"
     android:layout_marginTop="4dp"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -113,6 +113,7 @@
             android:layout_gravity="center"
             android:background="@color/colorDarkGray" />
 
+        <!-- 본문(캡처할 곳) -->
         <LinearLayout
             android:id="@+id/layout_write_bg"
             android:layout_width="match_parent"
@@ -147,6 +148,68 @@
 
         </LinearLayout>
 
+        <!-- 책 -->
+        <LinearLayout
+            android:id="@+id/ll_book_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="12dp"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginBottom="3dp"
+                android:text="*Book info*"
+                android:textSize="9dp"
+                android:textColor="@color/colorDarkDarkGray"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/book_info_background"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_book_info_img"
+                    android:layout_width="50dp"
+                    android:layout_height="75dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_book_info_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/colorDarkDarkGray"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/tv_book_info_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorDarkDarkGray"
+                        android:textSize="9dp" />
+
+                    <TextView
+                        android:id="@+id/tv_book_info_publisher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorDarkDarkGray"
+                        android:textSize="9dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 공유, 좋아요-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -170,6 +233,7 @@
                 android:background="@drawable/detail_pickbutton_before" />
         </LinearLayout>
 
+        <!-- 댓글 -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
