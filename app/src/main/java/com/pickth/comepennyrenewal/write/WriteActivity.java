@@ -9,13 +9,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.book.BookFindActivity;
+import com.pickth.comepennyrenewal.book.BookListItem;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
 import com.pickth.comepennyrenewal.util.DataManagement;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +37,16 @@ import retrofit2.Response;
 public class WriteActivity extends AppCompatActivity {
     int boothId = 0;
     String sharedText = "";
+    boolean isBook = false;
+    String userId = "";
+
+    // book info
+    String bookIsbn = "none";
+
+    String bookTitle = "";
+    String bookAuthor = "";
+    String bookPublisher = "";
+    String bookImgPath = "";
 
     // Binding view
     @BindView(R.id.base_detail_toolbar)
@@ -42,11 +58,27 @@ public class WriteActivity extends AppCompatActivity {
     @BindView(R.id.et_content)
     EditText etContent;
 
+    // book info
+    @BindView(R.id.ll_book_info)
+    LinearLayout llBookInfo;
+    @BindView(R.id.iv_book_info_img)
+    ImageView ivBookInfoImg;
+    @BindView(R.id.tv_book_info_title)
+    TextView tvBookInfoTitle;
+    @BindView(R.id.tv_book_info_author)
+    TextView tvBookInfoAuthor;
+    @BindView(R.id.tv_book_info_publisher)
+    TextView tvBookInfoPublisher;
+    @BindView(R.id.iv_add_book)
+    ImageView ivAddBook;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
         ButterKnife.bind(this);
+
+        userId = DataManagement.getAppPreferences(this,"user_id");
 
         //writebooth에서 intent할때 보낸 값 받기
         Intent intent = getIntent();
@@ -71,6 +103,17 @@ public class WriteActivity extends AppCompatActivity {
                 etContent.setText(sharedText);
             }
         }
+
+        {
+            ivAddBook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent itBookFInd = new Intent(getApplicationContext(), BookFindActivity.class);
+                    startActivityForResult(itBookFInd, 1);
+                    overridePendingTransition(0,0);
+                }
+            });
+        }
     }
 
     @Override
@@ -87,8 +130,13 @@ public class WriteActivity extends AppCompatActivity {
                     break;
                 }
 
-                // 서버에 저장
-                postIdea(DataManagement.getAppPreferences(this,"user_id"), boothId, content);
+                if(isBook) {
+                    // 책을 등록했다면
+                    postIdeaWithBook(userId, boothId, content, new BookListItem(bookTitle, bookAuthor, bookPublisher, bookImgPath, bookIsbn));
+                } else {
+                    // 서버에 저장
+                    postIdea(userId, boothId, content);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -107,6 +155,34 @@ public class WriteActivity extends AppCompatActivity {
         overridePendingTransition(0,0);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == 1) {
+            // bookFindActivity에서 확인을 누른 경우
+            isBook = true;
+            llBookInfo.setVisibility(View.VISIBLE);
+
+            // 책정보 가져오는 함수
+            bookTitle = data.getStringExtra("title");
+            bookAuthor = data.getStringExtra("author");
+            bookPublisher = data.getStringExtra("publisher");
+            bookIsbn = data.getStringExtra("isbn");
+            bookImgPath = data.getStringExtra("img_path");
+
+            tvBookInfoTitle.setText(bookTitle);
+            tvBookInfoAuthor.setText(bookAuthor);
+            tvBookInfoPublisher.setText(bookPublisher);
+
+            Picasso.with(getApplicationContext())
+                    .load(bookImgPath)
+                    .fit()
+                    .into(ivBookInfoImg);
+
+        }
+
+    }
+
     public void postIdea(String userId, int boothId, String content) {
         new IdeaService()
                 .postIdea(userId, boothId, content)
@@ -114,12 +190,26 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if(response.code() == 201) {
-                            Intent backIntent = new Intent();
+                            finish();
+                        } else {
+                            Toast.makeText(WriteActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-                            String backContent = etContent.getText().toString();
-                            backIntent.putExtra("backContent", backContent);
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                            setResult(1, backIntent);
+                    }
+                });
+    }
+
+    public void postIdeaWithBook(String userId, int boothId, String content, BookListItem bookItem) {
+        new IdeaService()
+                .postIdeaWithBook(userId, boothId, content, bookItem)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 201) {
                             finish();
                         } else {
                             Toast.makeText(WriteActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();

@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -82,10 +81,6 @@ public class IdeaDetailActivity extends AppCompatActivity {
 
     public int getResultCode() {
         return resultCode;
-    }
-
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
     }
 
     public void setBackIntent(Intent backIntent) {
@@ -157,11 +152,18 @@ public class IdeaDetailActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1) {
-            // 글 수정하고 왔을 때, 책 등록했을 때
-            // 새로 고침
-            View headerChangeView = getLayoutInflater().inflate(R.layout.header_idea_detail, null, false);
-            adapter.setHeaderView(headerChangeView);
-            adapter.notifyItemChanged(0);
+            // 글 수정
+
+            if(resultCode == 1) {
+                // 글 수정하고 왔을 때
+                this.resultCode = 1;
+
+                // 새로 고침
+                View headerChangeView = getLayoutInflater().inflate(R.layout.header_idea_detail, null, false);
+                adapter.setHeaderView(headerChangeView);
+                adapter.notifyItemChanged(0);
+            }
+
         }
     }
 
@@ -378,7 +380,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
 //                                String email = obj.getString("email");
                                     String userId = obj.getString("userId");
 
-//                                user_comment_img = obj.getString("image_t");
+                                String userImage = obj.getString("thumbnailImage");
 
 
                                     //서버에서 date받아와서 formatTimeString이용해서 값 변환
@@ -387,7 +389,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
 
 
                                     // Item 객체로 만들어야함
-                                    CommentItem items = new CommentItem("/booth/1.png", comment, userId + "@test.com", date, commentId);
+                                    CommentItem items = new CommentItem("/"+userImage, comment, userId + "@test.com", date, commentId);
 
                                     arrList.add(0, items);
                                     adapter.notifyDataSetChanged();
@@ -414,7 +416,6 @@ public class IdeaDetailActivity extends AppCompatActivity {
     }
 
     private void putComment(int commentId, String comment) {
-        Log.e("ttttttttt",commentId+"id, comment :"+comment);
         new CommentService()
                 .putComment(commentId, comment)
                 .enqueue(new Callback<ResponseBody>() {

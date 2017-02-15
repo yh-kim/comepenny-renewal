@@ -156,6 +156,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="20dp"
             android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:visibility="gone"
             android:orientation="vertical">
             <TextView
@@ -271,7 +272,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right|center"
                 android:layout_marginRight="10dp"
-                android:text="수정/삭제/책 등록"
+                android:text="수정/삭제"
                 android:textColor="@color/colorDarkGray"
                 android:textSize="11dp"
                 android:visibility="invisible" />

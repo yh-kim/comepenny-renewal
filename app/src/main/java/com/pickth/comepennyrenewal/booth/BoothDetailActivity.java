@@ -192,6 +192,13 @@ public class BoothDetailActivity extends AppCompatActivity {
             initializeList();
             return;
         }
+
+        // 글 썼을 때
+        if(requestCode == 3) {
+            initializeList();
+            return;
+        }
+
         switch (resultCode) {
             // 일반적 상황 (조회수, 좋아요수, 댓글수, 컨텐츠 업데이트)
             case 0:
@@ -215,11 +222,6 @@ public class BoothDetailActivity extends AppCompatActivity {
                 arrList.remove(selectedItem);
 
                 adapter.notifyDataSetChanged();
-                break;
-
-            // 글 썼을 때
-           case 3:
-               initializeList();
                 break;
         }
     }

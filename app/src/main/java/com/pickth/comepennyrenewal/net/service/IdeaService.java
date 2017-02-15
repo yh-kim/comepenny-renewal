@@ -1,5 +1,7 @@
 package com.pickth.comepennyrenewal.net.service;
 
+import com.pickth.comepennyrenewal.book.BookListItem;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
@@ -81,6 +83,18 @@ public class IdeaService extends BaseService {
     }
 
     /**
+     * 아이디어를 책과 함께 작성합니다
+     * @param userId
+     * @param boothId
+     * @param content
+     * @param bookItem
+     * @return
+     */
+    public Call<ResponseBody> postIdeaWithBook(String userId, int boothId, String content, BookListItem bookItem) {
+        return getAPI().postIdeaWithBook(userId, boothId, content, bookItem.getTitle(), bookItem.getAuthor(), bookItem.getPublisher(), bookItem.getIsbn(), bookItem.getImage());
+    }
+
+    /**
      * 아이디어를 좋아합니다
      * @param ideaId 아이디어 아이디
      * @param userId 유저 아이디
@@ -96,8 +110,8 @@ public class IdeaService extends BaseService {
      * @param content 수정할 컨텐츠
      * @return
      */
-    public Call<ResponseBody> putIdea(int ideaId, String content) {
-        return getAPI().putIdea(ideaId, content);
+    public Call<ResponseBody> putIdea(int ideaId, String content, BookListItem bookItem) {
+        return getAPI().putIdea(ideaId, content, bookItem.getTitle(), bookItem.getAuthor(), bookItem.getPublisher(), bookItem.getIsbn(), bookItem.getImage());
     }
 
     /**
@@ -151,11 +165,15 @@ public class IdeaService extends BaseService {
         Call<ResponseBody> postIdea(@Field("user_id") String userId, @Field("booth_id") int boothId, @Field("content") String content);
 
         @FormUrlEncoded
+        @POST("/idea")
+        Call<ResponseBody> postIdeaWithBook(@Field("user_id") String userId, @Field("booth_id") int boothId, @Field("content") String content, @Field("title") String title, @Field("author") String author, @Field("publisher") String publisher, @Field("isbn") String isbn, @Field("image_path") String imagePath);
+
+        @FormUrlEncoded
         @POST("/idea/{id}/like")
         Call<ResponseBody> postLike(@Path("id") int ideaId, @Field("user_id") String userId);
 
         @PUT("/idea/{id}")
-        Call<ResponseBody> putIdea(@Path("id") int ideaId, @Query("content") String content);
+        Call<ResponseBody> putIdea(@Path("id") int ideaId, @Query("content") String content, @Query("title") String title, @Query("author") String author, @Query("publisher") String publisher, @Query("isbn") String isbn, @Query("image_path") String imagePath);
 
         @DELETE("/idea/{id}")
         Call<ResponseBody> deleteIdea(@Path("id") int ideaId);

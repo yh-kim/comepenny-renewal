@@ -1,5 +1,6 @@
 package com.pickth.comepennyrenewal.book;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,25 +11,40 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.net.service.BookService;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Kim on 2017-02-15.
  */
 
 public class BookFindActivity extends AppCompatActivity {
+    InputMethodManager keyboard;
     String isbn = "";
-    int ideaId = 0;
+    String title = "";
+    String author = "";
+    String publisher = "";
+    String imgPath = "";
+
     Menu menu;
     BookAdapter adapter;
     ArrayList<BookListItem> arrList = new ArrayList();
@@ -44,16 +60,14 @@ public class BookFindActivity extends AppCompatActivity {
     ListView lvBookList;
     @BindView(R.id.iv_book_search)
     ImageView ivBookSearch;
+    @BindView(R.id.et_book_name)
+    EditText etBookName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_find);
         ButterKnife.bind(this);
-
-        // 아이디어 아이디 받기
-        Intent itReceive = getIntent();
-        ideaId = itReceive.getExtras().getInt("idea_id");
 
         // actionbar
         {
@@ -68,6 +82,9 @@ public class BookFindActivity extends AppCompatActivity {
         }
 
         {
+            //스크린키보드
+            keyboard = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
             tvToolbar.setText("책 등록");
         }
 
@@ -82,7 +99,12 @@ public class BookFindActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     arrList.clear();
                     adapter.notifyDataSetChanged();
-                    getBookList();
+
+                    //키보드숨기기
+                    keyboard.hideSoftInputFromWindow(etBookName.getWindowToken(), 0);
+
+                    String bookName = etBookName.getText().toString();
+                    getBookList("d_titl",bookName);
                 }
             });
 
@@ -91,6 +113,10 @@ public class BookFindActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     menu.getItem(0).setVisible(true);
                     isbn = arrList.get(position).getIsbn();
+                    title = arrList.get(position).getTitle();
+                    author = arrList.get(position).getAuthor();
+                    publisher = arrList.get(position).getPublisher();
+                    imgPath = arrList.get(position).getImage();
                     return;
                 }
             });
@@ -105,7 +131,15 @@ public class BookFindActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.action_done:
-                postBook(ideaId, isbn);
+                Intent itBack = new Intent();
+                itBack.putExtra("title", title);
+                itBack.putExtra("author", author);
+                itBack.putExtra("publisher", publisher);
+                itBack.putExtra("isbn", isbn);
+                itBack.putExtra("img_path", imgPath);
+
+                setResult(1, itBack);
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -126,14 +160,43 @@ public class BookFindActivity extends AppCompatActivity {
         overridePendingTransition(0,0);
     }
 
-    private void postBook(int ideaId, String isbn) {
-        finish();
-    }
+    private void getBookList(String type, String value) {
+        new BookService()
+                .getBook(type, value)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.code() == 200) {
+                            try {
+                                JSONObject jObject = new JSONObject(response.body().string());
 
-    private void getBookList() {
-        for(int i=0; i<5; i++) {
-            arrList.add(new BookListItem("책제목"+i,"저자"+i,"출판사"+i,"http://bookthumb.phinf.naver.net/cover/104/625/10462578.jpg?type=m1&udate=20160404",""));
-        }
-        adapter.notifyDataSetChanged();
+                                JSONArray retArr = jObject.getJSONArray("items");
+                                for(int i=0; i<retArr.length(); i++) {
+                                    JSONObject obj = retArr.getJSONObject(i);
+
+                                    String title = obj.getString("title");
+                                    String author = obj.getString("author");
+                                    String publisher = obj.getString("publisher");
+                                    String image = obj.getString("image");
+                                    String isbn = obj.getString("isbn");
+
+
+                                    String imgPath = image.split("\\?")[0];
+                                    arrList.add(new BookListItem(title,author,publisher,imgPath,isbn));
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+
     }
 }

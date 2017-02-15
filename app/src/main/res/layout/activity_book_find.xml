@@ -16,6 +16,7 @@
         android:background="@color/colorWhite">
 
         <EditText
+            android:id="@+id/et_book_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"

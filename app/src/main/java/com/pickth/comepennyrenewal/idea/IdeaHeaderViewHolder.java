@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
-import com.pickth.comepennyrenewal.book.BookFindActivity;
 import com.pickth.comepennyrenewal.net.service.BookService;
 import com.pickth.comepennyrenewal.net.service.CommentService;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
@@ -64,6 +63,16 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     IdeaService ideaService = new IdeaService();
     CommentService commentService = new CommentService();
     String userId = "";
+
+    // book info
+    String title = "";
+    String author = "";
+    String publisher = "";
+    String image = "";
+    String isbn = "none";
+
+
+    String imgPath = image.split("\\?")[0];
 
     // screenshot
     File sdCardPath;
@@ -158,21 +167,27 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
         btnDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final CharSequence[] items = {"수정하기", "삭제하기", "책 등록"};
+                final CharSequence[] items = {"수정하기", "삭제하기"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
 
-                builder.setTitle("글을 수정/삭제/책 등록 하시겠습니까?")
+                builder.setTitle("글을 수정/삭제 하시겠습니까?")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog1, int index) {
                                 switch (index) {
                                     case 0:
                                         // 아이디어 수정 실행
-                                        setResultCode(1);
                                         Intent itIdeaDetail = new Intent(activity.getApplicationContext(), ModifyIdeaActivity.class);
                                         itIdeaDetail.putExtra("idea_id", ideaId);
                                         String content = tvIdeaOriginal.getText().toString();
                                         itIdeaDetail.putExtra("content", content);
+                                        itIdeaDetail.putExtra("isbn", isbn);
+                                        if(isBook) {
+                                            itIdeaDetail.putExtra("title", title);
+                                            itIdeaDetail.putExtra("author", author);
+                                            itIdeaDetail.putExtra("publisher", publisher);
+                                            itIdeaDetail.putExtra("image", image);
+                                        }
                                         activity.startActivityForResult(itIdeaDetail,1);
                                         activity.overridePendingTransition(0, 0);
                                         dialog1.cancel();
@@ -199,20 +214,6 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
 
                                         AlertDialog dialog = builder.create();    // 알림창 객체 생성
                                         dialog.show();    // 알림창 띄우기
-                                        break;
-                                    case 2:
-                                        // 책 등록
-                                        if(isBook) {
-                                            // 책이 이미 등록돼있음
-                                            Toast.makeText(activity, "이미 책이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            // 책등록 액티비티 이동
-                                            Intent itBookFind = new Intent(activity.getApplicationContext(), BookFindActivity.class);
-                                            itBookFind.putExtra("idea_id", ideaId);
-                                            activity.startActivityForResult(itBookFind,1);
-                                            activity.overridePendingTransition(0, 0);
-                                        }
-                                        dialog1.cancel();
                                         break;
                                     default:
                                         dialog1.cancel();
@@ -317,18 +318,9 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
 
 
     /**
-     * ResultCode 설정
-     * resultCode : 0 - 일반 종료, 1 - 수정한 글, 2 - 삭제한 글
-     */
-    public void setResultCode(int resultCode) {
-        activity.setResultCode(resultCode);
-    }
-
-    /**
      * 액티비티 종료
      */
     public void finishActivity() {
-        setResultCode(2);
         activity.finish();
     }
 
@@ -357,6 +349,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                         int hit = ideaObject.getInt("hit");
                         int likeNum = ideaObject.getInt("likeNum");
                         int commentNum = ideaObject.getInt("commentNum");
+                        isbn = ideaObject.getString("isbn");
 
                         String img_url = boothId + "";
 
@@ -401,15 +394,15 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                         // 수정한 글일 때
                         if(activity.getResultCode() == 1) {
                             Intent backIntent = new Intent();
-
-                            Toast.makeText(itemView.getContext(), content+"", Toast.LENGTH_SHORT).show();
+                            backIntent.putExtra("backContent", content);
 
                             activity.setBackIntent(backIntent);
                         }
 
                         // 등록한 책이 있다면
-                        if(true) {
-                            getBookInfo("d_isbn", "1186560126 9791186560129");
+                        if(isbn != "none") {
+                            isBook = true;
+                            getBookInfo("d_isbn", isbn);
                         }
 
                     } catch (Exception e) {
@@ -446,13 +439,13 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                                 if(retArr.length() > 0) {
                                     JSONObject obj = retArr.getJSONObject(0);
 
-                                    String title = obj.getString("title");
-                                    String author = obj.getString("author");
-                                    String publisher = obj.getString("publisher");
-                                    String image = obj.getString("image");
+                                    title = obj.getString("title");
+                                    author = obj.getString("author");
+                                    publisher = obj.getString("publisher");
+                                    image = obj.getString("image");
 
 
-                                    String imgPath = image.split("\\?")[0];
+                                    imgPath = image.split("\\?")[0];
 
                                     llBookInfo.setVisibility(View.VISIBLE);
                                     tvBookInfoTitle.setText(title);
