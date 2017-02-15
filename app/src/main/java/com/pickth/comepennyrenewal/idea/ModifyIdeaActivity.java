@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -86,7 +85,6 @@ public class ModifyIdeaActivity extends AppCompatActivity {
         userId = DataManagement.getAppPreferences(this,"user_id");
 
         bookIsbn = intent.getExtras().getString("isbn");
-        Log.e("ttttttttt",bookIsbn+" ");
         if(!bookIsbn.equals("none")) {
             // 책이 등록 되어있다면
             llBookInfo.setVisibility(View.VISIBLE);

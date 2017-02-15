@@ -26,6 +26,7 @@ import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.comment.CommentAdapter;
 import com.pickth.comepennyrenewal.comment.CommentItem;
 import com.pickth.comepennyrenewal.net.service.CommentService;
+import com.pickth.comepennyrenewal.util.DataManagement;
 import com.pickth.comepennyrenewal.util.PickthDateFormat;
 import com.pickth.comepennyrenewal.util.SetFont;
 import com.pickth.comepennyrenewal.util.StaticNumber;
@@ -54,6 +55,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
     private int offset = 0;
     int selectedItem = 0;
 
+    String userId = "";
     int ideaId = 0;
     LinearLayoutManager rvLayoutManager;
     public ArrayList<CommentItem> arrList = new ArrayList<>();
@@ -75,12 +77,12 @@ public class IdeaDetailActivity extends AppCompatActivity {
     @BindView(R.id.rv_idea_detail_comments)
     RecyclerView rvComments;
 
-    public CommentAdapter getAdapter() {
-        return adapter;
-    }
-
     public int getResultCode() {
         return resultCode;
+    }
+
+    public void setResultCode(int resultCode) {
+        this.resultCode = resultCode;
     }
 
     public void setBackIntent(Intent backIntent) {
@@ -92,6 +94,8 @@ public class IdeaDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_idea_detail);
         ButterKnife.bind(this);
+
+        userId = DataManagement.getAppPreferences(getApplicationContext(), "user_id");
 
         //idea_id받기
         Intent itReceive = getIntent();
@@ -204,13 +208,11 @@ public class IdeaDetailActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedItem = i-1;
-//                    user_email = DataUtil.getAppPreferences(getApplicationContext(), "user_email");
+                if (userId.equals(arrList.get(selectedItem).getUserId())) {
 
-//                    if (user_email.equals(arr_list.get(commentDelPosition).getEmail())) {
-                if(true){
                     final CharSequence[] items = {"댓글 수정하기", "댓글 삭제하기"};
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(IdeaDetailActivity.this);     // 여기서 this는 Activity의 this
+                    AlertDialog.Builder builder = new AlertDialog.Builder(IdeaDetailActivity.this);
 
                     // 여기서 부터는 알림창의 속성 설정
                     builder.setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
@@ -377,8 +379,8 @@ public class IdeaDetailActivity extends AppCompatActivity {
 
                                     int commentId = obj.getInt("id");
                                     String comment = obj.getString("comment");
-//                                String email = obj.getString("email");
-                                    String userId = obj.getString("userId");
+                                String email = obj.getString("email");
+                                    String commentUserId = obj.getString("userId");
 
                                 String userImage = obj.getString("thumbnailImage");
 
@@ -389,7 +391,8 @@ public class IdeaDetailActivity extends AppCompatActivity {
 
 
                                     // Item 객체로 만들어야함
-                                    CommentItem items = new CommentItem("/"+userImage, comment, userId + "@test.com", date, commentId);
+                                    CommentItem items = new CommentItem(userImage, comment, email, date, commentId);
+                                    items.setUserId(commentUserId);
 
                                     arrList.add(0, items);
                                     adapter.notifyDataSetChanged();
@@ -402,8 +405,6 @@ public class IdeaDetailActivity extends AppCompatActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            Toast.makeText(IdeaDetailActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
 
                     }

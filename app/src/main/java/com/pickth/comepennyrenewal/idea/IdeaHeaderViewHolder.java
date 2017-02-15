@@ -59,7 +59,6 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     int isPick = 0;
     InputMethodManager keyboard;
     int ideaId = 0;
-    String email = "";
     IdeaService ideaService = new IdeaService();
     CommentService commentService = new CommentService();
     String userId = "";
@@ -127,7 +126,6 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
 
         //idea_id받기
         ideaId = intent.getExtras().getInt("idea_id");
-        email = intent.getExtras().getString("email");
 
         userId = DataManagement.getAppPreferences(itemView.getContext(), "user_id");
 
@@ -328,7 +326,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     /**
      * 아이디어 조회
      */
-    public void getIdea(int ideaId, String userId) {
+    public void getIdea(int ideaId, final String userId) {
 
         ideaService.getIdea(ideaId, userId)
                 .enqueue(new Callback<ResponseBody>() {
@@ -345,6 +343,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                         String content = ideaObject.getString("content");
                         int ideaId = ideaObject.getInt("id");
                         int ideaUserId = ideaObject.getInt("userId");
+                        String ideaEmail = ideaObject.getString("email");
                         int boothId = ideaObject.getInt("boothId");
                         int hit = ideaObject.getInt("hit");
                         int likeNum = ideaObject.getInt("likeNum");
@@ -357,10 +356,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                         String reg_Time = ideaObject.getString("date");
                         String time = PickthDateFormat.formatTimeString(reg_Time);
 
-
-                        String getemail = email;
-
-                        byte[] mailarray = getemail.getBytes();
+                        byte[] mailarray = ideaEmail.getBytes();
                         String email_view = new String(mailarray, 0, 3);
                         String hide_email = email_view + "*****";
 
@@ -385,7 +381,6 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                             btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
                         }
 
-                        String userId = DataManagement.getAppPreferences(itemView.getContext(), "user_id");
                         // 글을 쓴 사람이거나 관리자이면
                         if (userId.equals(ideaUserId) || userId.equals("0")) {
                             btnDel.setVisibility(View.VISIBLE);
@@ -410,6 +405,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                     }
                 } else if(response.code() == 404) {
                     // 삭제된 아이디어일 때
+                    activity.setResultCode(2);
                     finishActivity();
                 }else {
                     Toast.makeText(activity, response.code()+"error", Toast.LENGTH_SHORT).show();
@@ -558,6 +554,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if(response.code() == 204) {
+                            activity.setResultCode(2);
                             finishActivity();
                         }
                         else {

@@ -11,17 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.booth.BoothDetailActivity;
-import com.pickth.comepennyrenewal.net.service.BoothService;
-import com.pickth.comepennyrenewal.util.StaticNumber;
-import com.pickth.comepennyrenewal.write.WriteBoothSelectActivity;
-import com.pickth.comepennyrenewal.booth.PopularBoothAdapter;
 import com.pickth.comepennyrenewal.booth.BoothListItem;
+import com.pickth.comepennyrenewal.booth.PopularBoothAdapter;
+import com.pickth.comepennyrenewal.net.service.BoothService;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
 import com.pickth.comepennyrenewal.util.SetFont;
+import com.pickth.comepennyrenewal.util.StaticNumber;
+import com.pickth.comepennyrenewal.write.WriteBoothSelectActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -156,7 +155,6 @@ public class IdeaFragment extends Fragment {
                     selectedItem = i - 1;
                     Intent itIdeaDetail = new Intent(rootView.getContext(), IdeaDetailActivity.class);
                     itIdeaDetail.putExtra("idea_id", arrList.get(selectedItem).getId());
-                    itIdeaDetail.putExtra("email", arrList.get(selectedItem).getEmail());
                     startActivityForResult(itIdeaDetail, 0);
                     getActivity().overridePendingTransition(0,0);
                 }
@@ -239,6 +237,7 @@ public class IdeaFragment extends Fragment {
                                     int ideaId = obj.getInt("id");
                                     int ideaUserId = obj.getInt("userId");
                                     int boothId = obj.getInt("boothId");
+                                    String email = obj.getString("email");
                                     String content = obj.getString("content");
                                     int hit = obj.getInt("hit");
                                     String date = obj.getString("date");
@@ -246,7 +245,7 @@ public class IdeaFragment extends Fragment {
                                     int commentNum = obj.getInt("commentNum");
 
                                     // Item 객체로 만들어야함
-                                    IdeaListItem item = new IdeaListItem(content, ideaUserId + "@test.com", boothNames[boothId - 1], hit, commentNum, likeNum, ideaId);
+                                    IdeaListItem item = new IdeaListItem(content, email, boothNames[boothId - 1], hit, commentNum, likeNum, ideaId);
                                     // Item 객체를 ArrayList에 넣는다
                                     arrList.add(item);
 
@@ -261,8 +260,6 @@ public class IdeaFragment extends Fragment {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            Toast.makeText(rootView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
                     }
 

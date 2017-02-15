@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.idea.IdeaAdapter;
@@ -140,7 +139,6 @@ public class BoothDetailActivity extends AppCompatActivity {
                     selectedItem = i - 1;
                     Intent itIdeaDetail = new Intent(getApplication(), IdeaDetailActivity.class);
                     itIdeaDetail.putExtra("idea_id", arrList.get(selectedItem).getId());
-                    itIdeaDetail.putExtra("email", arrList.get(selectedItem).getEmail());
                     startActivityForResult(itIdeaDetail, 0);
                     overridePendingTransition(0,0);
                 }
@@ -158,7 +156,7 @@ public class BoothDetailActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent itWrite = new Intent(getApplicationContext(), WriteActivity.class);
                     itWrite.putExtra("booth_id", boothId);
-                    startActivityForResult(itWrite, 3);
+                    startActivityForResult(itWrite, 1);
                     overridePendingTransition(0, 0);
                 }
             });
@@ -193,8 +191,8 @@ public class BoothDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // 글 썼을 때
-        if(requestCode == 3) {
+        // 추가버튼 눌렀을 때
+        if(requestCode == 1) {
             initializeList();
             return;
         }
@@ -220,7 +218,6 @@ public class BoothDetailActivity extends AppCompatActivity {
             // 삭제된 상황 (아이템 지우기)
             case 2:
                 arrList.remove(selectedItem);
-
                 adapter.notifyDataSetChanged();
                 break;
         }
@@ -246,6 +243,7 @@ public class BoothDetailActivity extends AppCompatActivity {
                                     int ideaId = obj.getInt("id");
                                     int ideaUserId = obj.getInt("userId");
                                     int boothId = obj.getInt("boothId");
+                                    String email = obj.getString("email");
                                     String content = obj.getString("content");
                                     int hit = obj.getInt("hit");
                                     String date = obj.getString("date");
@@ -253,7 +251,7 @@ public class BoothDetailActivity extends AppCompatActivity {
                                     int commentNum = obj.getInt("commentNum");
 
                                     // Item 객체로 만들어야함
-                                    IdeaListItem item = new IdeaListItem(content, ideaUserId + "@test.com", boothName, hit, commentNum, likeNum, ideaId);
+                                    IdeaListItem item = new IdeaListItem(content, email, boothName, hit, commentNum, likeNum, ideaId);
                                     // Item 객체를 ArrayList에 넣는다
                                     arrList.add(item);
 
@@ -268,8 +266,6 @@ public class BoothDetailActivity extends AppCompatActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            Toast.makeText(BoothDetailActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
                     }
 

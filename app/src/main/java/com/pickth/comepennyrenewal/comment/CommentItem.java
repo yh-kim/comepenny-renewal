@@ -10,6 +10,15 @@ public class CommentItem {
     private String userEmail;
     private String commentTime;
     private int commentId;
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public CommentItem(String userImg, String content, String userEmail, String commentTime, int commentId) {
         this.userImg = userImg;

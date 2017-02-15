@@ -187,8 +187,6 @@ public class WriteBoothSelectActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
-                    Toast.makeText(WriteBoothSelectActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
                 }
 
             }

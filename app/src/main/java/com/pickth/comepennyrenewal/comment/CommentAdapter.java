@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.idea.IdeaHeaderViewHolder;
-import com.pickth.comepennyrenewal.util.StaticUrl;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class CommentAdapter extends RecyclerView.Adapter {
         CommentItem item = arrList.get(position);
 
         Picasso.with(itemView.getContext())
-                .load(StaticUrl.FILE_URL+item.getUserImg())
+                .load(item.getUserImg())
                 .fit()
                 .into(holder.img);
         byte[] mailarray = item.getUserEmail().getBytes();

@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // 나중에 지워야됨
-        DataManagement.setAppPreferences(this, "user_id", "0");
-
         UserManagement.requestMe(new MeResponseCallback() {
             @Override
             public void onSessionClosed(ErrorResult errorResult) {
@@ -67,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UserProfile result) {
                 Map userInfo = result.getProperties();
+                String userId = String.valueOf(result.getId());
+                DataManagement.setAppPreferences(getApplicationContext(), "user_id", userId);
                 String email = userInfo.get("email").toString();
             }
         });

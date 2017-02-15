@@ -57,16 +57,6 @@ public class IdeaAdapter extends RecyclerView.Adapter<IdeaAdapter.IdeaViewHolder
         // 컨텐츠 라인수 줄이기
         String contents =item.getContent();
 
-        /*
-        holder.tvTitle.setText(contents);
-        int maxLines = 14;
-        holder.tvTitle.setMaxLines(maxLines);
-        if (holder.tvTitle.getLineCount() > maxLines){
-            int lastCharShown =  holder.tvTitle.getLayout().getLineVisibleEnd(maxLines - 2);
-            contents = contents.substring(0, lastCharShown) + "\n …";
-            Log.e("dddddddddddddddddd",lastCharShown+"");
-        }
-        */
         if (contents.length() > 140){
             contents = contents.substring(0, 140) + " …";
         }
