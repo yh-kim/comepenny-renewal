@@ -18,10 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".main.MainActivity">
-
         </activity>
         <activity android:name=".login.LoginActivity">
-
         </activity>
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -52,6 +50,8 @@
         <activity android:name=".setting.SettingActivity"/>
         <activity android:name=".myinfo.MyInfoActivity"/>
         <activity android:name=".login.SignupEmailActivity"/>
+        <activity android:name=".book.BookFindActivity">
+        </activity>
     </application>
 
 </manifest>

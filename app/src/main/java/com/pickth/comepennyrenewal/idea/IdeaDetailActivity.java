@@ -157,14 +157,11 @@ public class IdeaDetailActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 1) {
-            // 글 수정하고 왔을 때
+            // 글 수정하고 왔을 때, 책 등록했을 때
             // 새로 고침
             View headerChangeView = getLayoutInflater().inflate(R.layout.header_idea_detail, null, false);
             adapter.setHeaderView(headerChangeView);
             adapter.notifyItemChanged(0);
-
-//            TextView tvOrigin = (TextView)headerView.findViewById(R.id.tv_idea_original);
-//            tvOrigin.setText("");
         }
     }
 

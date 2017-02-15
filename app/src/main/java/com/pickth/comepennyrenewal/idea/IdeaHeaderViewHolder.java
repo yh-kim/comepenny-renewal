@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.book.BookFindActivity;
 import com.pickth.comepennyrenewal.net.service.BookService;
 import com.pickth.comepennyrenewal.net.service.CommentService;
 import com.pickth.comepennyrenewal.net.service.IdeaService;
@@ -55,6 +56,7 @@ import static com.pickth.comepennyrenewal.R.id.tv_view;
 
 public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
     IdeaDetailActivity activity = (IdeaDetailActivity)itemView.getContext();
+    boolean isBook = false;
     int isPick = 0;
     InputMethodManager keyboard;
     int ideaId = 0;
@@ -156,11 +158,11 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
         btnDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final CharSequence[] items = {"수정하기", "삭제하기"};
+                final CharSequence[] items = {"수정하기", "삭제하기", "책 등록"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
 
-                builder.setTitle("글을 수정/삭제 하시겠습니까?")
+                builder.setTitle("글을 수정/삭제/책 등록 하시겠습니까?")
                         .setItems(items, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog1, int index) {
                                 switch (index) {
@@ -176,6 +178,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                                         dialog1.cancel();
                                         break;
                                     case 1:
+                                        // 아이디어 삭제
                                         AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
                                         builder.setTitle("삭제 확인")        // 제목 설정
                                                 .setMessage("이 글을 삭제하시겠습니까?")        // 메세지 설정
@@ -196,6 +199,20 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
 
                                         AlertDialog dialog = builder.create();    // 알림창 객체 생성
                                         dialog.show();    // 알림창 띄우기
+                                        break;
+                                    case 2:
+                                        // 책 등록
+                                        if(isBook) {
+                                            // 책이 이미 등록돼있음
+                                            Toast.makeText(activity, "이미 책이 등록되어 있습니다.", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            // 책등록 액티비티 이동
+                                            Intent itBookFind = new Intent(activity.getApplicationContext(), BookFindActivity.class);
+                                            itBookFind.putExtra("idea_id", ideaId);
+                                            activity.startActivityForResult(itBookFind,1);
+                                            activity.overridePendingTransition(0, 0);
+                                        }
+                                        dialog1.cancel();
                                         break;
                                     default:
                                         dialog1.cancel();
@@ -432,7 +449,10 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                                     String title = obj.getString("title");
                                     String author = obj.getString("author");
                                     String publisher = obj.getString("publisher");
-                                    String imgUrl = obj.getString("image");
+                                    String image = obj.getString("image");
+
+
+                                    String imgPath = image.split("\\?")[0];
 
                                     llBookInfo.setVisibility(View.VISIBLE);
                                     tvBookInfoTitle.setText(title);
@@ -440,7 +460,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                                     tvBookInfoPublisher.setText(publisher);
 
                                     Picasso.with(itemView.getContext())
-                                            .load(imgUrl)
+                                            .load(imgPath)
                                             .fit()
                                             .into(ivBookInfoImg);
                                 }
