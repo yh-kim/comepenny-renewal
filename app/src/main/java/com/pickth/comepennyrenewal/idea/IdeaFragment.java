@@ -194,20 +194,19 @@ public class IdeaFragment extends Fragment {
         }
 
         switch (resultCode) {
-            // 일반적 상황 (조회수, 좋아요수, 댓글수, 컨텐츠 업데이트)
+            // 일반적 상황 (조회수, 좋아요수, 댓글수, 컨텐츠 업데이트), 수정했을 때
             case 0:
-                IdeaListItem backItem0 = arrList.get(selectedItem);
-                backItem0.setHit(backItem0.getHit() + 1);
-
-                adapter.notifyDataSetChanged();
-                break;
             case 1:
-                // 수정했을 때
                 String backContent = data.getStringExtra("backContent");
+                int backView = data.getIntExtra("backView", 0);
+                int backComment = data.getIntExtra("backComment", 0);
+                int backLike = data.getIntExtra("backLike", 0);
 
-                IdeaListItem backItem1 = arrList.get(selectedItem);
-                backItem1.setContent(backContent);
-                backItem1.setHit(backItem1.getHit() + 1);
+                IdeaListItem backItem = arrList.get(selectedItem);
+                backItem.setContent(backContent);
+                backItem.setHit(backView);
+                backItem.setCommentNum(backComment);
+                backItem.setLikeNum(backLike);
 
                 adapter.notifyDataSetChanged();
                 break;

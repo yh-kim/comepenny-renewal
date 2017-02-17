@@ -82,7 +82,7 @@ public class WriteActivity extends AppCompatActivity {
 
         //writebooth에서 intent할때 보낸 값 받기
         Intent intent = getIntent();
-        boothId = intent.getExtras().getInt("booth_Id");
+        boothId = intent.getExtras().getInt("booth_id");
         sharedText = intent.getExtras().getString("sharedText");
 
         // actionbar

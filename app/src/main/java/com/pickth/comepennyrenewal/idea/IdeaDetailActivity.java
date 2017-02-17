@@ -77,16 +77,16 @@ public class IdeaDetailActivity extends AppCompatActivity {
     @BindView(R.id.rv_idea_detail_comments)
     RecyclerView rvComments;
 
-    public int getResultCode() {
-        return resultCode;
-    }
-
     public void setResultCode(int resultCode) {
         this.resultCode = resultCode;
     }
 
     public void setBackIntent(Intent backIntent) {
         this.backIntent = backIntent;
+    }
+
+    public Intent getBackIntent() {
+        return backIntent;
     }
 
     @Override
@@ -175,6 +175,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
         arrList.clear();
         offset = 0;
         isScroll = true;
+        adapter.notifyDataSetChanged();
 
         getCommentList();
     }
@@ -351,10 +352,10 @@ public class IdeaDetailActivity extends AppCompatActivity {
     public void finish() {
         // resultCode로 수정값이나 삭제한거 넘겨줘야 됨
         switch (resultCode) {
+            case 0:
             case 1:
                 setResult(resultCode, backIntent);
                 break;
-            case 0:
             case 2:
                 setResult(resultCode);
                 break;
@@ -438,7 +439,12 @@ public class IdeaDetailActivity extends AppCompatActivity {
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        initializeComment();
+                        if(response.code() == 204) {
+                            initializeComment();
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

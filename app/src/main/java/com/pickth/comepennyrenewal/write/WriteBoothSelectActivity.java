@@ -113,7 +113,7 @@ public class WriteBoothSelectActivity extends AppCompatActivity {
             case R.id.action_done:
                 if(selected){
                     Intent company = new Intent(getApplicationContext(), WriteActivity.class);
-                    company.putExtra("booth_Id", boothId);
+                    company.putExtra("booth_id", boothId);
 
                     // 공유 받은거라면
                     if(sharedText != ""){

@@ -342,7 +342,7 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
 
                         String content = ideaObject.getString("content");
                         int ideaId = ideaObject.getInt("id");
-                        int ideaUserId = ideaObject.getInt("userId");
+                        String ideaUserId = ideaObject.getString("userId");
                         String ideaEmail = ideaObject.getString("email");
                         int boothId = ideaObject.getInt("boothId");
                         int hit = ideaObject.getInt("hit");
@@ -386,13 +386,13 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                             btnDel.setVisibility(View.VISIBLE);
                         }
 
-                        // 수정한 글일 때
-                        if(activity.getResultCode() == 1) {
-                            Intent backIntent = new Intent();
-                            backIntent.putExtra("backContent", content);
-
-                            activity.setBackIntent(backIntent);
-                        }
+                        // back intent
+                        Intent backIntent = new Intent();
+                        backIntent.putExtra("backContent", content);
+                        backIntent.putExtra("backView", hit);
+                        backIntent.putExtra("backComment", commentNum);
+                        backIntent.putExtra("backLike", likeNum);
+                        activity.setBackIntent(backIntent);
 
                         // 등록한 책이 있다면
                         if(isbn != "none") {
@@ -508,6 +508,8 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                         if(response.code() == 201) {
                             btnPick.setBackgroundResource(R.drawable.detail_pickbutton_after);
                             isPick = 1;
+                            int likeNum = Integer.parseInt(tvLike.getText().toString().trim()) + 1;
+                            tvLike.setText(String.valueOf(likeNum));
                         } else {
                             Toast.makeText(itemView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
                         }
@@ -533,6 +535,8 @@ public class IdeaHeaderViewHolder extends RecyclerView.ViewHolder {
                         if(response.code() == 204) {
                             btnPick.setBackgroundResource(R.drawable.detail_pickbutton_before);
                             isPick = 0;
+                            int likeNum = Integer.parseInt(tvLike.getText().toString().trim()) - 1;
+                            tvLike.setText(String.valueOf(likeNum));
                         } else {
                             Toast.makeText(itemView.getContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
                         }

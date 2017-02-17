@@ -27,6 +27,7 @@ import com.kakao.util.helper.log.Logger;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.login.LoginActivity;
 import com.pickth.comepennyrenewal.myinfo.MyInfoActivity;
+import com.pickth.comepennyrenewal.net.service.UserService;
 import com.pickth.comepennyrenewal.setting.SettingActivity;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
 import com.pickth.comepennyrenewal.util.DataManagement;
@@ -35,6 +36,10 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     BackPressCloseHandler backPressCloseHandler;
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onSuccess(Long userId) {
-                                        redirectLoginActivity();
+                                        deleteUser(String.valueOf(userId));
                                     }
                                 });
                                 dialog.dismiss();
@@ -211,5 +216,26 @@ public class MainActivity extends AppCompatActivity {
                                 dialog.dismiss();
                             }
                         }).show();
+    }
+
+    private void deleteUser(String userId) {
+        new UserService()
+                .deleteUser(userId)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(response.code() == 204) {
+                            // 정상적으로 제거되면
+                            redirectLoginActivity();
+                        } else {
+                            Toast.makeText(MainActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
     }
 }

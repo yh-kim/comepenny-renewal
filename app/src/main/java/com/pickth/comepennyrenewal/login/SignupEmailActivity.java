@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.main.MainActivity;
 import com.pickth.comepennyrenewal.net.service.UserService;
@@ -36,6 +38,10 @@ import retrofit2.Response;
 
 public class SignupEmailActivity extends AppCompatActivity {
     String email;
+    String id = "";
+    String profileImage = "";
+    String thumbnailImage = "";
+    String nickname = "";
 
     // Binding view
     @BindView(R.id.base_detail_toolbar)
@@ -88,7 +94,28 @@ public class SignupEmailActivity extends AppCompatActivity {
                 // 정상적인 이메일인지 확인
 
                 // 1. 서버에 저장
-                postUser();
+                UserManagement.requestMe(new MeResponseCallback() {
+                    @Override
+                    public void onSessionClosed(ErrorResult errorResult) {
+
+                    }
+
+                    @Override
+                    public void onNotSignedUp() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(UserProfile result) {
+                        id = String.valueOf(result.getId());
+                        profileImage = result.getProfileImagePath();
+                        thumbnailImage = result.getThumbnailImagePath();
+                        nickname = result.getNickname();
+
+                        postUser(id, email, profileImage, thumbnailImage, nickname);
+                    }
+                });
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -145,18 +172,27 @@ public class SignupEmailActivity extends AppCompatActivity {
         }
     }
 
-    private void postUser() {
+    private void postUser(String id, String email, String profileImage, String thumbnailImage, String nickname) {
         new UserService()
-                .postUser()
+                .postUser(id, email, profileImage, thumbnailImage, nickname)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         // 1. 이메일이 이미 있다면
                         // 에러
+                        if(response.code() == 409) {
+                            Toast.makeText(getApplicationContext(), "이미 존재하는 이메일입니다", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         // 2. 정상적인 이메일 이라면
                         // 카카오 세션에 저장
-                        requestUpdateEmail();
+                        if(response.code() == 201) {
+                            requestUpdateEmail();
+                        } else {
+                            Toast.makeText(getApplicationContext(), response.code()+"error", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
                     @Override
