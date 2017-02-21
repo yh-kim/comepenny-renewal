@@ -1,6 +1,5 @@
 package com.pickth.comepennyrenewal.myinfo;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,18 +12,22 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.net.service.UserService;
 import com.pickth.comepennyrenewal.util.DataManagement;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,10 +39,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -67,10 +70,17 @@ public class MyInfoActivity  extends AppCompatActivity {
     @BindView(R.id.base_detail_toolbar)
     Toolbar mToolBar;
 
+    @BindView(R.id.tv_toolbar)
+    TextView tvToolbar;
+
     @BindView(R.id.img_my_info_user)
     ImageView imgMyInfoUser;
 
+    @BindView(R.id.tv_my_info_user_name)
+    TextView tvMyInfoUserName;
 
+    @BindView(R.id.tv_my_info_user_email)
+    TextView tvMyInfoUserEmail;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +89,34 @@ public class MyInfoActivity  extends AppCompatActivity {
         ButterKnife.bind(this);
 
         userId = DataManagement.getAppPreferences(getApplicationContext(),"user_id");
+
+        // 유저정보 가져오기
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+
+            }
+
+            @Override
+            public void onNotSignedUp() {
+
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Map userInfo = result.getProperties();
+                String email = userInfo.get("email").toString();
+                String userNickName = result.getNickname();
+                String userImage = result.getThumbnailImagePath();
+
+                tvMyInfoUserName.setText(userNickName);
+                tvMyInfoUserEmail.setText(email);
+                Picasso.with(getApplicationContext())
+                        .load(userImage)
+                        .fit()
+                        .into(imgMyInfoUser);
+            }
+        });
 
         // actionbar
         {
@@ -90,6 +128,8 @@ public class MyInfoActivity  extends AppCompatActivity {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
+
+            tvToolbar.setText("내 정보");
         }
 
         // view pager
@@ -382,29 +422,29 @@ public class MyInfoActivity  extends AppCompatActivity {
                 });
     }
 
-    @OnClick(R.id.img_my_info_user)
-    void click(View view) {
-        final CharSequence[] items = {"기본이미지", "사진앨범", "카메라"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfoActivity.this);     // 여기서 this는 Activity의 this
-
-        // 여기서 부터는 알림창의 속성 설정
-        builder.setTitle("프로필 사진 설정").setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
-            public void onClick(DialogInterface dialog, int index) {
-                switch (index) {
-                    case 0:
-                        doBasePhotoAction();
-                        break;
-                    case 1:
-                        doTakeAlbumAction();
-                        break;
-                    case 2:
-                        doTakePhotoAction();
-                        break;
-                }
-            }
-        });
-        AlertDialog dialog = builder.create();    // 알림창 객체 생성
-        dialog.show();    // 알림창 띄우기
-    }
+//    @OnClick(R.id.img_my_info_user)
+//    void click(View view) {
+//        final CharSequence[] items = {"기본이미지", "사진앨범", "카메라"};
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfoActivity.this);     // 여기서 this는 Activity의 this
+//
+//        // 여기서 부터는 알림창의 속성 설정
+//        builder.setTitle("프로필 사진 설정").setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
+//            public void onClick(DialogInterface dialog, int index) {
+//                switch (index) {
+//                    case 0:
+//                        doBasePhotoAction();
+//                        break;
+//                    case 1:
+//                        doTakeAlbumAction();
+//                        break;
+//                    case 2:
+//                        doTakePhotoAction();
+//                        break;
+//                }
+//            }
+//        });
+//        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+//        dialog.show();    // 알림창 띄우기
+//    }
 }
