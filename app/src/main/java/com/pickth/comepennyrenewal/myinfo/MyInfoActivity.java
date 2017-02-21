@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -67,31 +70,7 @@ public class MyInfoActivity  extends AppCompatActivity {
     @BindView(R.id.img_my_info_user)
     ImageView imgMyInfoUser;
 
-    @OnClick(R.id.img_my_info_user)
-    void click(View view) {
-        final CharSequence[] items = {"기본이미지", "사진앨범", "카메라"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfoActivity.this);     // 여기서 this는 Activity의 this
-
-        // 여기서 부터는 알림창의 속성 설정
-        builder.setTitle("프로필 사진 설정").setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
-            public void onClick(DialogInterface dialog, int index) {
-                switch (index) {
-                    case 0:
-                        doBasePhotoAction();
-                        break;
-                    case 1:
-                        doTakeAlbumAction();
-                        break;
-                    case 2:
-                        doTakePhotoAction();
-                        break;
-                }
-            }
-        });
-        AlertDialog dialog = builder.create();    // 알림창 객체 생성
-        dialog.show();    // 알림창 띄우기
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +90,28 @@ public class MyInfoActivity  extends AppCompatActivity {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
+        }
+
+        // view pager
+        {
+            ViewPager viewPager = ButterKnife.findById(this,R.id.myinfo_viewpager);
+            MyInfoFragmentAdapter adapter = new MyInfoFragmentAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(adapter);
+
+            TabLayout tabLayout = ButterKnife.findById(this, R.id.myinfo_tab_layout);
+            tabLayout.setupWithViewPager(viewPager);
+
+            // tab icon 설정
+            ImageView customIdeaIcon = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab, null);
+            customIdeaIcon.setImageResource(R.drawable.selector_tab_write);
+            tabLayout.getTabAt(0).setCustomView(customIdeaIcon);
+
+            ImageView customBoothIcon = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab, null);
+            customBoothIcon.setImageResource(R.drawable.selector_tab_like);
+            tabLayout.getTabAt(1).setCustomView(customBoothIcon);
+
+            // 처음에 선택돼 있게
+            tabLayout.getTabAt(0).getCustomView().setSelected(true);
         }
     }
 
@@ -379,5 +380,31 @@ public class MyInfoActivity  extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @OnClick(R.id.img_my_info_user)
+    void click(View view) {
+        final CharSequence[] items = {"기본이미지", "사진앨범", "카메라"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfoActivity.this);     // 여기서 this는 Activity의 this
+
+        // 여기서 부터는 알림창의 속성 설정
+        builder.setTitle("프로필 사진 설정").setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
+            public void onClick(DialogInterface dialog, int index) {
+                switch (index) {
+                    case 0:
+                        doBasePhotoAction();
+                        break;
+                    case 1:
+                        doTakeAlbumAction();
+                        break;
+                    case 2:
+                        doTakePhotoAction();
+                        break;
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
     }
 }

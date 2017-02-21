@@ -52,6 +52,8 @@
         <activity android:name=".login.SignupEmailActivity"/>
         <activity android:name=".book.BookFindActivity">
         </activity>
+        <activity android:name=".idea.MyInfoLikeActivity"/>
+        <activity android:name=".idea.MyInfoWriteActivity"/>
     </application>
 
 </manifest>

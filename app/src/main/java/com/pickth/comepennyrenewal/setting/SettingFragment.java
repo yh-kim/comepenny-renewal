@@ -33,6 +33,22 @@ public class SettingFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_setting);
 
+        Preference pfAboutUs = findPreference("aboutUs");
+        pfAboutUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                logout();
+                return false;
+            }
+        });
+
+        Preference pfLicense = findPreference("license");
+        pfLicense.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return false;
+            }
+        });
 
         Preference pfLogout = findPreference("logout");
         pfLogout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -54,12 +70,29 @@ public class SettingFragment extends PreferenceFragment {
     }
 
     private void logout() {
-        UserManagement.requestLogout(new LogoutResponseCallback() {
-            @Override
-            public void onCompleteLogout() {
-                redirectLoginActivity();
-            }
-        });
+        final String appendMessage = getString(R.string.com_kakao_confirm_logout);
+        new AlertDialog.Builder(getActivity())
+                .setMessage(appendMessage)
+                .setPositiveButton(getString(R.string.com_kakao_ok_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserManagement.requestLogout(new LogoutResponseCallback() {
+                                    @Override
+                                    public void onCompleteLogout() {
+                                        redirectLoginActivity();
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getString(R.string.com_kakao_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
     }
 
     private void deleteUser(String userId) {

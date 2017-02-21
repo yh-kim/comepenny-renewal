@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_coordinator_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/toolbar_base"/>
-
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/base_detail_appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/base_detail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorMainBlue"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         <LinearLayout
             android:id="@+id/myinfo"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:background="@color/colorWhite"
             android:clickable="false"
             android:focusable="false"
             android:longClickable="false"
             android:orientation="vertical">
 
-
             <com.pickth.comepennyrenewal.util.CircularImageView
+                android:id="@+id/img_my_info_user"
                 android:layout_width="136dp"
                 android:layout_height="136dp"
-                android:background="@drawable/myinfo_userimage"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
-                android:id="@+id/img_my_info_user"/>
-
+                android:background="@drawable/myinfo_userimage" />
 
             <TextView
                 android:id="@+id/tv_my_info_user_mail"
@@ -38,6 +48,21 @@
                 android:text=""
                 android:textColor="#313131"
                 android:textSize="18sp" />
-            </LinearLayout>
         </LinearLayout>
-</LinearLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/myinfo_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:scrollbars="horizontal"
+            app:tabBackground="@color/colorWhite"
+            app:tabIndicatorColor="@color/colorMainBlue" />
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/myinfo_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>

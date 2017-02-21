@@ -23,6 +23,8 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.pickth.comepennyrenewal.R;
+import com.pickth.comepennyrenewal.idea.MyInfoLikeActivity;
+import com.pickth.comepennyrenewal.idea.MyInfoWriteActivity;
 import com.pickth.comepennyrenewal.login.LoginActivity;
 import com.pickth.comepennyrenewal.myinfo.MyInfoActivity;
 import com.pickth.comepennyrenewal.setting.SettingActivity;
@@ -88,11 +90,15 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.nav_item_2:
                             // 내가 쓴 아이디어
+                            startActivity(new Intent(getApplicationContext(), MyInfoWriteActivity.class));
+                            overridePendingTransition(0,0);
 
                             mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_item_3:
                             // Pick한 아이디어
+                            startActivity(new Intent(getApplicationContext(), MyInfoLikeActivity.class));
+                            overridePendingTransition(0,0);
 
                             mDrawerLayout.closeDrawers();
                             break;

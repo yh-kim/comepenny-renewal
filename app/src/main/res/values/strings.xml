@@ -3,8 +3,8 @@
 
     <!-- navigation item -->
     <string name="nav_item_1">내 정보</string>
-    <string name="nav_item_2">내가 쓴 아이디어</string>
-    <string name="nav_item_3">Pick 아이디어</string>
+    <string name="nav_item_2">내가 쓴 글</string>
+    <string name="nav_item_3">내가 Pick한 글</string>
     <string name="nav_item_4">설정</string>
     <string name="nav_item_5">의견 보내기</string>
 
