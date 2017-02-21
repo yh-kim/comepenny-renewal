@@ -11,12 +11,12 @@ import java.util.ArrayList;
 
 public class ActivityManagement {
     //onCreate되는 액티비티들 저장
-    public static ArrayList<Activity> actList = new ArrayList<Activity>();
+    public static ArrayList<Activity> activityList = new ArrayList<Activity>();
 
     // 저장한 모든 액티비티 종료
     public void closeActivity(){
-        for(int i=0; i< actList.size();i++){
-            actList.get(i).finish();
+        for(int i = 0; i< activityList.size(); i++){
+            activityList.get(i).finish();
         }
     }
 }

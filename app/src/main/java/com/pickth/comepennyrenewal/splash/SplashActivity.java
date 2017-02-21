@@ -70,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(UserProfile result) {
-                if(result.getProperties().get("email") != null){
+                if(!result.getProperties().get("email").toString().equals("")){
                     redirectMainActivity();
                 } else {
                     // 이메일 저장이 안돼있을 때

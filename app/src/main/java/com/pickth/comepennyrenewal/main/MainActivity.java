@@ -1,6 +1,5 @@
 package com.pickth.comepennyrenewal.main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,7 +9,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -23,14 +21,12 @@ import android.widget.Toast;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
-import com.kakao.usermgmt.callback.UnLinkResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
-import com.kakao.util.helper.log.Logger;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.login.LoginActivity;
 import com.pickth.comepennyrenewal.myinfo.MyInfoActivity;
-import com.pickth.comepennyrenewal.net.service.UserService;
 import com.pickth.comepennyrenewal.setting.SettingActivity;
+import com.pickth.comepennyrenewal.util.ActivityManagement;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
 import com.pickth.comepennyrenewal.util.DataManagement;
 import com.squareup.picasso.Picasso;
@@ -39,10 +35,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     BackPressCloseHandler backPressCloseHandler;
@@ -59,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         {
+            ActivityManagement.activityList.add(this);
             backPressCloseHandler = new BackPressCloseHandler(this);
         }
 
@@ -90,12 +83,18 @@ public class MainActivity extends AppCompatActivity {
                             Intent itMyInfo = new Intent(getApplication(), MyInfoActivity.class);
                             startActivity(itMyInfo);
                             overridePendingTransition(0,0);
+
+                            mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_item_2:
                             // 내가 쓴 아이디어
+
+                            mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_item_3:
                             // Pick한 아이디어
+
+                            mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_item_4:
                             // 설정
@@ -103,14 +102,14 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(itSetting);
                             overridePendingTransition(0,0);
 
-                            // 회원탈퇴
-//                            unLink();
+                            mDrawerLayout.closeDrawers();
                             break;
                         case R.id.nav_item_5:
                             // 의견 보내기
+
+                            mDrawerLayout.closeDrawers();
                             break;
                     }
-//                    mDrawerLayout.closeDrawers();
                     return true;
                 }
             });
@@ -209,66 +208,5 @@ public class MainActivity extends AppCompatActivity {
         itLogin.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(itLogin);
         finish();
-    }
-
-    private void unLink() {
-        final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
-        new AlertDialog.Builder(this)
-                .setMessage(appendMessage)
-                .setPositiveButton(getString(R.string.com_kakao_ok_button),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                UserManagement.requestUnlink(new UnLinkResponseCallback() {
-                                    @Override
-                                    public void onFailure(ErrorResult errorResult) {
-                                        Logger.e(errorResult.toString());
-                                    }
-
-                                    @Override
-                                    public void onSessionClosed(ErrorResult errorResult) {
-                                        redirectLoginActivity();
-                                    }
-
-                                    @Override
-                                    public void onNotSignedUp() {
-                                    }
-
-                                    @Override
-                                    public void onSuccess(Long userId) {
-                                        deleteUser(String.valueOf(userId));
-                                    }
-                                });
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.com_kakao_cancel_button),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-    }
-
-    private void deleteUser(String userId) {
-        new UserService()
-                .deleteUser(userId)
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.code() == 204) {
-                            // 정상적으로 제거되면
-                            redirectLoginActivity();
-                        } else {
-                            Toast.makeText(MainActivity.this, response.code()+"error", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                    }
-                });
     }
 }
