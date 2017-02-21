@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    sleep(500);
+                    sleep(400);
                     getUser();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -99,5 +99,11 @@ public class SplashActivity extends AppCompatActivity {
         itSignupEmail.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(itSignupEmail);
         finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0,0);
     }
 }

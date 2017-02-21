@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ImageView
-        android:layout_width="304dp"
-        android:layout_height="180dp"
-        android:background="@color/colorMainBlue"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMainBlue"
+    android:orientation="vertical"
+    android:paddingLeft="15dp">
 
+    <com.pickth.comepennyrenewal.util.CircularImageView
+        android:id="@+id/iv_nav_user_img"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:id="@+id/tv_nav_user_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:text="용훈"
+        android:textColor="@color/colorWhite"
+        android:textSize="12dp" />
+
+    <TextView
+        android:id="@+id/tv_nav_user_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:text="kelomg@naver.com"
+        android:textColor="@color/colorWhite"
+        android:textSize="12dp" />
 </LinearLayout>

@@ -81,4 +81,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(itMain);
         finish();
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0,0);
+    }
 }

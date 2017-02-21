@@ -6,6 +6,8 @@
             android:key="useNotice"
             android:summary="알림을 켭니다"
             android:title="알림 켜기"
+            android:checked="false"
+            android:enabled="false"
             />
 
         <CheckBoxPreference

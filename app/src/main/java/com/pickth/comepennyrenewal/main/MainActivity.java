@@ -15,7 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kakao.network.ErrorResult;
@@ -31,6 +33,7 @@ import com.pickth.comepennyrenewal.net.service.UserService;
 import com.pickth.comepennyrenewal.setting.SettingActivity;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
 import com.pickth.comepennyrenewal.util.DataManagement;
+import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -43,9 +46,9 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     BackPressCloseHandler backPressCloseHandler;
+    View headerView;
 
-    @BindView(R.id.main_draw_layout)
-    DrawerLayout mDrawerLayout;
+    @BindView(R.id.main_draw_layout) DrawerLayout mDrawerLayout;
 
     @BindView(R.id.main_toolbar) Toolbar mToolBar;
 
@@ -54,26 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        UserManagement.requestMe(new MeResponseCallback() {
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-
-            }
-
-            @Override
-            public void onNotSignedUp() {
-
-            }
-
-            @Override
-            public void onSuccess(UserProfile result) {
-                Map userInfo = result.getProperties();
-                String userId = String.valueOf(result.getId());
-                DataManagement.setAppPreferences(getApplicationContext(), "user_id", userId);
-                String email = userInfo.get("email").toString();
-            }
-        });
 
         {
             backPressCloseHandler = new BackPressCloseHandler(this);
@@ -94,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         // drawer
         {
             NavigationView navigationView = ButterKnife.findById(this,R.id.nav_view);
+            headerView = navigationView.getHeaderView(0);
+
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
 
                 @Override
@@ -106,15 +91,23 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(itMyInfo);
                             overridePendingTransition(0,0);
                             break;
+                        case R.id.nav_item_2:
+                            // 내가 쓴 아이디어
+                            break;
                         case R.id.nav_item_3:
+                            // Pick한 아이디어
+                            break;
+                        case R.id.nav_item_4:
                             // 설정
                             Intent itSetting = new Intent(getApplication(), SettingActivity.class);
                             startActivity(itSetting);
                             overridePendingTransition(0,0);
-                            break;
-                        case R.id.nav_item_4:
+
                             // 회원탈퇴
-                            unLink();
+//                            unLink();
+                            break;
+                        case R.id.nav_item_5:
+                            // 의견 보내기
                             break;
                     }
 //                    mDrawerLayout.closeDrawers();
@@ -144,6 +137,46 @@ public class MainActivity extends AppCompatActivity {
             // 처음에 선택돼 있게
             tabLayout.getTabAt(0).getCustomView().setSelected(true);
         }
+
+        // 유저정보 가져오기
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+
+            }
+
+            @Override
+            public void onNotSignedUp() {
+
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Map userInfo = result.getProperties();
+                String userId = String.valueOf(result.getId());
+                String email = userInfo.get("email").toString();
+                String userNickName = result.getNickname();
+                String userImage = result.getThumbnailImagePath();
+
+                DataManagement.setAppPreferences(getApplicationContext(), "user_id", userId);
+
+                // navigation 셋팅
+                setNavHeaderViewLayout(userNickName, email, userImage);
+            }
+        });
+    }
+
+    private void setNavHeaderViewLayout(String userName, String userEmail, String userImg) {
+        ImageView ivNavUserImg = (ImageView)headerView.findViewById(R.id.iv_nav_user_img);
+        TextView tvNavUserNickname = (TextView)headerView.findViewById(R.id.tv_nav_user_nickname);
+        TextView tvNavUserEmail = (TextView)headerView.findViewById(R.id.tv_nav_user_email);
+
+        tvNavUserNickname.setText(userName);
+        tvNavUserEmail.setText(userEmail);
+        Picasso.with(getApplicationContext())
+                .load(userImg)
+                .fit()
+                .into(ivNavUserImg);
     }
 
     // 취소버튼 눌렀을 때
