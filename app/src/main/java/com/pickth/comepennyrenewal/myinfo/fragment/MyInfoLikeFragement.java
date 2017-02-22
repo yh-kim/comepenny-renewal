@@ -68,7 +68,7 @@ public class MyInfoLikeFragement extends MyInfoBaseFragment {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else if(response.code() == 404 && count == 0) {
+                        } else if(response.code() == 404 && offset == 0) {
                             tvIdeaNotFound.setVisibility(View.VISIBLE);
                         }
                     }

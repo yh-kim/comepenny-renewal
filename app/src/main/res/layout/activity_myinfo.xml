@@ -51,6 +51,7 @@
                 android:id="@+id/img_my_info_user"
                 android:layout_width="78dp"
                 android:layout_height="78dp"
+                android:background="@null"
                 android:layout_gravity="center"/>
 
             <TextView

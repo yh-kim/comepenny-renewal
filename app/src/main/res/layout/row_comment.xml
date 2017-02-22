@@ -22,7 +22,7 @@
 
         <com.pickth.comepennyrenewal.util.CircularImageView
             android:id="@+id/iv_comment_basic"
-            android:background="@drawable/myinfo_userimage"
+            android:background="@null"
             android:layout_width="46dp"
             android:layout_height="46dp"
             android:layout_marginLeft="3dp"

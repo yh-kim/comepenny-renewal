@@ -92,7 +92,8 @@ public class SignupEmailActivity extends AppCompatActivity {
                 }
 
                 // 정상적인 이메일인지 확인
-                if(isValidEmail(email)) {
+                if(!isValidEmail(email)) {
+                    // 실패하면
                     Toast.makeText(getApplicationContext(), "이메일을 확인해주세요", Toast.LENGTH_SHORT).show();
                     break;
                 }

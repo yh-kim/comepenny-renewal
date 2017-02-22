@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.kakao.auth.ApiResponseCallback;
 import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -16,6 +17,9 @@ import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.pickth.comepennyrenewal.R;
 import com.pickth.comepennyrenewal.main.MainActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Kim on 2017-02-11.
@@ -95,7 +99,11 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(UserProfile result) {
-                if (!result.getProperties().get("email").toString().equals("")) {
+                if(result.getThumbnailImagePath().equals("")) {
+                    requestUpdateImagePath();
+                }
+
+                if (result.getProperties().get("email") != null) {
                     redirectMainActivity();
                 } else {
                     // 이메일 저장이 안돼있을 때
@@ -126,5 +134,35 @@ public class LoginActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(0,0);
+    }
+
+    private void requestUpdateImagePath() {
+        final Map<String, String> properties = new HashMap<String, String>();
+        properties.put("thumbnail_image", "https://s3.ap-northeast-2.amazonaws.com/comepenny/myinfo_userimage.png");
+
+        UserManagement.requestUpdateProfile(new LoginActivity.UsermgmtResponseCallback<Long>(){
+            @Override
+            public void onSuccess(Object result) {
+                super.onSuccess(result);
+            }
+        }, properties);
+    }
+
+    private  abstract class UsermgmtResponseCallback<Long> extends ApiResponseCallback {
+
+        @Override
+        public void onSessionClosed(ErrorResult errorResult) {
+
+        }
+
+        @Override
+        public void onNotSignedUp() {
+
+        }
+
+        @Override
+        public void onSuccess(Object result) {
+
+        }
     }
 }

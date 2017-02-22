@@ -34,7 +34,8 @@ public class FABHideOnScroll extends FloatingActionButton.Behavior {
             // 밑으로 내릴 때
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
             int fab_bottomMargin = layoutParams.bottomMargin;
-            child.animate().translationY(child.getHeight() + fab_bottomMargin).setInterpolator(new LinearInterpolator()).start();
+            // 20은 Jelly bean 이상일 때 home touch button 사이즈만큼 내리는거
+            child.animate().translationY(child.getHeight() + fab_bottomMargin + 20).setInterpolator(new LinearInterpolator()).start();
         }else if(dyConsumed <0){
             // 위로 올릴 때
             child.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();

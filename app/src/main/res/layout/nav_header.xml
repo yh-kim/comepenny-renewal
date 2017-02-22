@@ -10,6 +10,7 @@
         android:id="@+id/iv_nav_user_img"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:background="@null"
         android:layout_marginTop="15dp" />
 
     <TextView
