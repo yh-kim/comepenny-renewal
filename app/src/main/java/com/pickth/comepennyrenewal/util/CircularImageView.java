@@ -92,14 +92,15 @@ public class CircularImageView extends ImageView{
         paint = new Paint();
         paint.setAntiAlias(true);
         paintBorder = new Paint();
+        paintBorder.setAlpha(254);
         paintBorder.setAntiAlias(true);
         paintBorder.setStyle(Paint.Style.STROKE);
         paintSelectorBorder = new Paint();
         paintSelectorBorder.setAntiAlias(true);
 
         // Enable software rendering on HoneyComb and up. (needed for shadow)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            setLayerType(LAYER_TYPE_SOFTWARE, null);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+//            setLayerType(LAYER_TYPE_SOFTWARE, null);
 
         // Load the styled attributes and set their properties
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.CircularImageView, defStyle, 0);

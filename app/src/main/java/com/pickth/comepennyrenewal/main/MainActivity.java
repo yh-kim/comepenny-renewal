@@ -2,6 +2,7 @@ package com.pickth.comepennyrenewal.main;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,10 +13,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -173,6 +176,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setNavHeaderViewLayout(String userName, String userEmail, String userImg) {
+        LinearLayout llNavHeader = (LinearLayout)headerView.findViewById(R.id.ll_nav_header);
+        
+        int height = getHomeTouchButtonHeight();
+        if(height != 0) {
+            // 홈 터치 버튼이 있으면
+            llNavHeader.setPadding(30,height*2/3,0,0);
+        }
+
         ImageView ivNavUserImg = (ImageView)headerView.findViewById(R.id.iv_nav_user_img);
         TextView tvNavUserNickname = (TextView)headerView.findViewById(R.id.tv_nav_user_nickname);
         TextView tvNavUserEmail = (TextView)headerView.findViewById(R.id.tv_nav_user_email);
@@ -222,5 +233,20 @@ public class MainActivity extends AppCompatActivity {
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         startActivity(it);
         overridePendingTransition(0,0);
+    }
+
+    private int getHomeTouchButtonHeight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+            int realHeight = metrics.heightPixels;
+            if (realHeight > usableHeight)
+                return realHeight - usableHeight;
+            else
+                return 0;
+        }
+        return 0;
     }
 }

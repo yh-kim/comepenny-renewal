@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorMainBlue"
     android:orientation="vertical"
+    android:id="@+id/ll_nav_header"
     android:paddingLeft="15dp">
 
     <com.pickth.comepennyrenewal.util.CircularImageView
