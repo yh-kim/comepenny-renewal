@@ -92,6 +92,10 @@ public class SignupEmailActivity extends AppCompatActivity {
                 }
 
                 // 정상적인 이메일인지 확인
+                if(isValidEmail(email)) {
+                    Toast.makeText(getApplicationContext(), "이메일을 확인해주세요", Toast.LENGTH_SHORT).show();
+                    break;
+                }
 
                 // 1. 서버에 저장
                 UserManagement.requestMe(new MeResponseCallback() {
@@ -200,5 +204,12 @@ public class SignupEmailActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    public boolean isValidEmail(CharSequence target) {
+        if (target == null)
+            return false;
+
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 }

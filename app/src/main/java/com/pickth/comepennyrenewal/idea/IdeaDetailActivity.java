@@ -30,7 +30,6 @@ import com.pickth.comepennyrenewal.util.DataManagement;
 import com.pickth.comepennyrenewal.util.PickthDateFormat;
 import com.pickth.comepennyrenewal.util.SetFont;
 import com.pickth.comepennyrenewal.util.StaticNumber;
-import com.pickth.comepennyrenewal.util.StaticUrl;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -280,7 +279,7 @@ public class IdeaDetailActivity extends AppCompatActivity {
         final Dialog mDialog = ab.create();
 
         Picasso.with(innerView.getContext())
-                .load(StaticUrl.FILE_URL+arrList.get(selectedItem).getUserImg())
+                .load(arrList.get(selectedItem).getUserImg())
                 .fit()
                 .into(ivRepleModifyBasic);
 

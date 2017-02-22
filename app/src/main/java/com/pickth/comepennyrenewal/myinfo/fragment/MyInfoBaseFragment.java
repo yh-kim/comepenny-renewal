@@ -99,7 +99,7 @@ public abstract class MyInfoBaseFragment extends Fragment {
             adapter.onItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    selectedItem = i - 1;
+                    selectedItem = i;
                     Intent itIdeaDetail = new Intent(rootView.getContext(), IdeaDetailActivity.class);
                     itIdeaDetail.putExtra("idea_id", arrList.get(selectedItem).getId());
                     startActivityForResult(itIdeaDetail, 0);

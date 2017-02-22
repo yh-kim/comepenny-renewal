@@ -37,7 +37,6 @@ public class SettingFragment extends PreferenceFragment {
         pfAboutUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                logout();
                 return false;
             }
         });
