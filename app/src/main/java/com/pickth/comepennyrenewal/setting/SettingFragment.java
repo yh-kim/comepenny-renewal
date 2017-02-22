@@ -37,6 +37,7 @@ public class SettingFragment extends PreferenceFragment {
         pfAboutUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                redirectAboutUsActivity();
                 return false;
             }
         });
@@ -45,6 +46,7 @@ public class SettingFragment extends PreferenceFragment {
         pfLicense.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                redirectLicenseActivity();
                 return false;
             }
         });
@@ -123,6 +125,18 @@ public class SettingFragment extends PreferenceFragment {
         new ActivityManagement().closeActivity();
     }
 
+    private void redirectLicenseActivity() {
+        final Intent itLicense = new Intent(getActivity(), LicenseActivity.class);
+        itLicense.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(itLicense);
+    }
+
+    private void redirectAboutUsActivity() {
+        final Intent itAboutUs = new Intent(getActivity(), AboutUsActivity.class);
+        itAboutUs.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(itAboutUs);
+    }
+
     private void unLink() {
         final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
         new AlertDialog.Builder(getActivity())
@@ -162,4 +176,5 @@ public class SettingFragment extends PreferenceFragment {
                             }
                         }).show();
     }
+
 }

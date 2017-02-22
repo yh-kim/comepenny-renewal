@@ -1,6 +1,7 @@
 package com.pickth.comepennyrenewal.main;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.nav_item_5:
                             // 의견 보내기
-
+                            sendEmail();
                             mDrawerLayout.closeDrawers();
                             break;
                     }
@@ -214,5 +215,12 @@ public class MainActivity extends AppCompatActivity {
         itLogin.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(itLogin);
         finish();
+    }
+
+    private void sendEmail() {
+        Uri uri = Uri.parse("mailto:yonghoon.kim@pickth.com");
+        Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+        startActivity(it);
+        overridePendingTransition(0,0);
     }
 }

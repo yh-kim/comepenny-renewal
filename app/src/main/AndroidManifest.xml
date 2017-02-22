@@ -54,6 +54,8 @@
         </activity>
         <activity android:name=".idea.MyInfoLikeActivity"/>
         <activity android:name=".idea.MyInfoWriteActivity"/>
+        <activity android:name=".setting.LicenseActivity"/>
+        <activity android:name=".setting.AboutUsActivity"/>
     </application>
 
 </manifest>

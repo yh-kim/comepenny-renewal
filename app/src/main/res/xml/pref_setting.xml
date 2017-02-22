@@ -20,15 +20,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="고객지원"  >
-        <Preference
-            android:title="공지사항"
-            android:key="notice" />
+        <!--<Preference-->
+            <!--android:title="공지사항"-->
+            <!--android:key="notice" />-->
         <Preference
             android:title="About Us"
             android:key="aboutUs" />
         <Preference
             android:title="License"
             android:key="license"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="계정"  >
         <Preference
             android:title="로그아웃"
             android:key="logout"/>
