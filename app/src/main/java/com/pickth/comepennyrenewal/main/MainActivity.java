@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setNavHeaderViewLayout(String userName, String userEmail, String userImg) {
         LinearLayout llNavHeader = (LinearLayout)headerView.findViewById(R.id.ll_nav_header);
-        
+
         int height = getHomeTouchButtonHeight();
         if(height != 0) {
             // 홈 터치 버튼이 있으면
