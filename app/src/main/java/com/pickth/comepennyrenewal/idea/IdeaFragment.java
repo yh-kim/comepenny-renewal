@@ -249,8 +249,8 @@ public class IdeaFragment extends Fragment {
                                     arrList.add(item);
 
                                     // Adapter에게 데이터를 넣었으니 갱신하라고 알려줌
-                                    adapter.notifyDataSetChanged();
-//                                adapter.notifyItemChanged(i+offset+1);
+//                                    adapter.notifyDataSetChanged();
+                                    adapter.notifyItemChanged(i+offset+1);
                                 }
                                 count = jObject.getInt("cnt");
                                 offset += count;
