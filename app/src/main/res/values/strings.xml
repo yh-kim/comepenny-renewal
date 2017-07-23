@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">호모띵쿠스</string>
 
+    <string name="tab_item_1">Today\'s Homo</string>
+    <string name="tab_item_2">Category</string>
+
     <!-- navigation item -->
     <string name="nav_item_1">내 정보</string>
     <string name="nav_item_2">내가 쓴 글</string>

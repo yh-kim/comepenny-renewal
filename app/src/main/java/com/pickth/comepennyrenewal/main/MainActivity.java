@@ -1,6 +1,7 @@
 package com.pickth.comepennyrenewal.main;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.pickth.comepennyrenewal.setting.SettingActivity;
 import com.pickth.comepennyrenewal.util.ActivityManagement;
 import com.pickth.comepennyrenewal.util.BackPressCloseHandler;
 import com.pickth.comepennyrenewal.util.DataManagement;
+import com.pickth.comepennyrenewal.util.SetFont;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
@@ -135,13 +137,22 @@ public class MainActivity extends AppCompatActivity {
             tabLayout.setupWithViewPager(viewPager);
 
             // tab icon 설정
-            ImageView customIdeaIcon = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab, null);
-            customIdeaIcon.setImageResource(R.drawable.selector_tab_homo);
-            tabLayout.getTabAt(0).setCustomView(customIdeaIcon);
+            TextView customIdeaText = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_text_tab, null);
+            customIdeaText.setText(getResources().getString(R.string.tab_item_1));
+            customIdeaText.setTypeface(Typeface.createFromFile("/system/fonts/DroidSans.ttf"));
+            tabLayout.getTabAt(0).setCustomView(customIdeaText);
 
-            ImageView customBoothIcon = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab, null);
-            customBoothIcon.setImageResource(R.drawable.selector_tab_category);
-            tabLayout.getTabAt(1).setCustomView(customBoothIcon);
+            TextView customBoothText = (TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_text_tab, null);
+            customBoothText.setText(getResources().getString(R.string.tab_item_2));
+            customBoothText.setTypeface(Typeface.createFromFile("/system/fonts/DroidSans.ttf"));
+            tabLayout.getTabAt(1).setCustomView(customBoothText);
+//            ImageView customIdeaIcon = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab, null);
+//            customIdeaIcon.setImageResource(R.drawable.selector_tab_homo);
+//            tabLayout.getTabAt(0).setCustomView(customIdeaIcon);
+//
+//            ImageView customBoothIcon = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.custom_tab, null);
+//            customBoothIcon.setImageResource(R.drawable.selector_tab_category);
+//            tabLayout.getTabAt(1).setCustomView(customBoothIcon);
 
             // 처음에 선택돼 있게
             tabLayout.getTabAt(0).getCustomView().setSelected(true);
