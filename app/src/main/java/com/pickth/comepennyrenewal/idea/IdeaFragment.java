@@ -164,7 +164,7 @@ public class IdeaFragment extends Fragment {
         // fab
         {
             FloatingActionButton fab = ButterKnife.findById(rootView, R.id.main_fab);
-            fab.setImageResource(R.drawable.btn_float2);
+//            fab.setImageResource(R.drawable.btn_float2);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

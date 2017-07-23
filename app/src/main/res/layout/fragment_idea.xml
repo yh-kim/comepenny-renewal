@@ -25,7 +25,8 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="12dp"
         android:scaleType="center"
-        android:src="@drawable/main_fab"
+        android:src="@drawable/ic_create_black_24dp"
+        app:backgroundTint="@color/colorMainBlue"
         app:layout_anchor="@id/rv_main_idea"
         app:layout_anchorGravity="bottom|right|end"
         app:layout_behavior = "com.pickth.comepennyrenewal.util.FABHideOnScroll"/>
